@@ -85,12 +85,9 @@ axiosInstance.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        // Direct call to refresh endpoint
-        const response = await axios.post(
-          `${baseURL}/auth/refresh`,
-          {},
-          { withCredentials: true }
-        );
+        // Direct call to refresh endpoint using a clean axios instance (no interceptors loop)
+        const refreshAxios = axios.create({ baseURL, withCredentials: true });
+        const response = await refreshAxios.post('/auth/refresh');
 
         const newAccessToken = response.data?.accessToken;
         const user = response.data?.user;

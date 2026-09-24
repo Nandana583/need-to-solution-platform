@@ -16,10 +16,21 @@ export const createApp = () => {
   // 1. Security Headers via Helmet
   app.use(helmet());
 
-  // 2. CORS with Credentials
+  // 2. CORS with Credentials — supports multiple origins (localhost + production)
+  const allowedOrigins = config.clientUrls;
   app.use(
     cors({
-      origin: config.clientUrl,
+      origin: (origin, callback) => {
+        // Allow requests with no origin (curl, Postman, server-to-server)
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.includes(origin)) {
+          return callback(null, true);
+        }
+        return callback(
+          new Error(`CORS: Origin "${origin}" is not allowed.`),
+          false
+        );
+      },
       credentials: true,
       methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
       allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
