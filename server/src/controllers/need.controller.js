@@ -15,6 +15,10 @@ export const createNeed = asyncHandler(async (req, res) => {
     preferredSolutionType,
     locationLabel,
     location,
+    requiredSkill,
+    requiredService,
+    preferredTime,
+    duration,
     deadline,
   } = req.body;
 
@@ -32,6 +36,10 @@ export const createNeed = asyncHandler(async (req, res) => {
     preferredSolutionType: preferredSolutionType || 'COMMERCIAL_FIRST',
     locationLabel: locationLabel || req.user.locationLabel || '',
     location: location || req.user.location,
+    requiredSkill: requiredSkill || '',
+    requiredService: requiredService || '',
+    preferredTime: preferredTime || '',
+    duration: duration || '',
     deadline: deadline || null,
     status: 'CREATED',
   });

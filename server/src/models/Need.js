@@ -59,6 +59,26 @@ const needSchema = new mongoose.Schema(
         default: [0, 0],
       },
     },
+    requiredSkill: {
+      type: String,
+      default: '',
+      trim: true,
+    },
+    requiredService: {
+      type: String,
+      default: '',
+      trim: true,
+    },
+    preferredTime: {
+      type: String,
+      default: '',
+      trim: true,
+    },
+    duration: {
+      type: String,
+      default: '',
+      trim: true,
+    },
     deadline: {
       type: Date,
     },

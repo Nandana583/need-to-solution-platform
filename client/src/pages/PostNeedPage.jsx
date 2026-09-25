@@ -35,6 +35,10 @@ export const PostNeedPage = () => {
   const [urgency, setUrgency] = useState('MEDIUM');
   const [preferredSolutionType, setPreferredSolutionType] = useState('COMMERCIAL_FIRST');
   const [locationLabel, setLocationLabel] = useState('');
+  const [requiredSkill, setRequiredSkill] = useState('');
+  const [requiredService, setRequiredService] = useState('');
+  const [preferredTime, setPreferredTime] = useState('');
+  const [duration, setDuration] = useState('');
   const [deadline, setDeadline] = useState('');
 
   // Matching Result State
@@ -84,6 +88,10 @@ export const PostNeedPage = () => {
         urgency,
         preferredSolutionType,
         locationLabel,
+        requiredSkill,
+        requiredService,
+        preferredTime,
+        duration,
         deadline: deadline || undefined,
       });
 
@@ -233,6 +241,63 @@ export const PostNeedPage = () => {
                   className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
                   required
                 ></textarea>
+              </div>
+
+              {/* Structured Capability Requirements */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 rounded-2xl bg-white/5 border border-white/10">
+                <div>
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1">
+                    Specific Service Required
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Fan Repair, Switch Wiring, AC Filter"
+                    value={requiredService}
+                    onChange={(e) => setRequiredService(e.target.value)}
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-black/20 border border-white/10 text-white text-xs focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  />
+                  <span className="text-[10px] text-slate-400 mt-1 block">Exact capability to match against provider listings</span>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1">
+                    Profession / Skill Needed
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Electrician, Plumber, Tutor"
+                    value={requiredSkill}
+                    onChange={(e) => setRequiredSkill(e.target.value)}
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-black/20 border border-white/10 text-white text-xs focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  />
+                  <span className="text-[10px] text-slate-400 mt-1 block">Professional category or skill role</span>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1">
+                    Preferred Time of Day
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Morning, 4:00 PM - 6:00 PM, Today evening"
+                    value={preferredTime}
+                    onChange={(e) => setPreferredTime(e.target.value)}
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-black/20 border border-white/10 text-white text-xs focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1">
+                    Estimated Duration
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. 1 hour, 30 minutes, Half day"
+                    value={duration}
+                    onChange={(e) => setDuration(e.target.value)}
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-black/20 border border-white/10 text-white text-xs focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  />
+                </div>
               </div>
 
               {/* Location & Urgency */}

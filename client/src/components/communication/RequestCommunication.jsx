@@ -76,14 +76,41 @@ export const RequestCommunication = ({
     }
   };
 
-  // Structured action suggestions based on request context
-  const quickSuggestions = [
-    { label: "I'm available now", text: "I'm available to coordinate on this request right now." },
-    { label: "Today afternoon", text: "Is today afternoon suitable for this service/item?" },
-    { label: "Tomorrow morning", text: "Can we schedule/exchange tomorrow morning?" },
-    { label: "Confirmed location", text: "Please confirm the location address." },
-    { label: "Need more details", text: "Could you please share a few more details about this?" },
-  ];
+  // Structured action suggestions dynamically tailored to status and context
+  const getContextualSuggestions = () => {
+    if (currentStatus === 'PENDING') {
+      return [
+        { label: "Available today", text: "I am available today for this request." },
+        { label: "Available tomorrow", text: "I can take care of this tomorrow." },
+        { label: "Share exact location", text: "Could you please share your exact address / landmark?" },
+        { label: "Need 1 hour", text: "This will require approximately 1 hour to complete." },
+        { label: "Need more details", text: "Could you share additional details about the issue?" },
+      ];
+    }
+    if (currentStatus === 'ACCEPTED' || currentStatus === 'IN_PROGRESS') {
+      return [
+        { label: "On my way", text: "I am on my way to the location now." },
+        { label: "Arrived", text: "I have arrived at the location." },
+        { label: "Estimated 30 mins", text: "I expect to complete this in about 30 minutes." },
+        { label: "Ready for pickup", text: "The item is ready for pickup." },
+        { label: "All done", text: "The task is finished. Please verify and mark completed!" },
+      ];
+    }
+    if (currentStatus === 'COMPLETED') {
+      return [
+        { label: "Thank you!", text: "Thank you for coordinating! Service completed successfully." },
+        { label: "Review left", text: "I have submitted a review. Thank you!" },
+        { label: "Need assistance", text: "Feel free to reach out if any further assistance is needed." },
+      ];
+    }
+    return [
+      { label: "I'm available", text: "I'm available to coordinate on this request." },
+      { label: "Confirm timing", text: "Let's confirm the preferred time." },
+      { label: "Confirm location", text: "Please confirm the location address." },
+    ];
+  };
+
+  const quickSuggestions = getContextualSuggestions();
 
   return (
     <div className="glass-card rounded-2xl border border-white/10 p-4 sm:p-6 flex flex-col space-y-4 bg-slate-900/60">

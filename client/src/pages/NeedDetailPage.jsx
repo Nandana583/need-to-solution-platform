@@ -185,7 +185,7 @@ export const NeedDetailPage = () => {
             {need.description}
           </p>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 pt-4 border-t border-white/10 text-xs">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4 border-t border-white/10 text-xs">
             <div>
               <span className="text-slate-400 block mb-1">Urgency</span>
               <span className="font-semibold text-white">{need.urgency}</span>
@@ -198,9 +198,15 @@ export const NeedDetailPage = () => {
               </span>
             </div>
             <div>
-              <span className="text-slate-400 block mb-1">Created Date</span>
+              <span className="text-slate-400 block mb-1">Required Skill/Service</span>
+              <span className="font-semibold text-emerald-300">
+                {need.requiredService || need.requiredSkill || 'General Service'}
+              </span>
+            </div>
+            <div>
+              <span className="text-slate-400 block mb-1">Preferred Time / Duration</span>
               <span className="font-semibold text-white">
-                {new Date(need.createdAt).toLocaleDateString()}
+                {need.preferredTime || 'Flexible'} {need.duration ? `(${need.duration})` : ''}
               </span>
             </div>
           </div>

@@ -33,25 +33,66 @@ export class MatchingService {
     for (const service of potentialServices) {
       if (!service.provider) continue;
 
-      let score = 60; // Base score for exact category match
+      const profile = await ProviderProfile.findOne({ user: service.provider._id });
+      
+      // Exclude inactive or strictly unavailable providers from active commercial matches
+      if (profile && (!profile.isActive || profile.availabilityStatus === 'UNAVAILABLE')) {
+        continue;
+      }
+
+      let score = 50; // Base score for exact category match
       const reasons = ['Category Match'];
 
-      // Keyword match in title or description
+      // Evaluate explicit capability matching across Service title, description, and ProviderProfile.skills
       const serviceText = `${service.title} ${service.description}`.toLowerCase();
-      const words = need.title.toLowerCase().split(/\s+/).filter((w) => w.length > 2);
-      const matchedWords = words.filter((word) => serviceText.includes(word));
+      const providerSkills = (profile?.skills || []).map((s) => s.toLowerCase());
+
+      const reqSkill = (need.requiredSkill || '').toLowerCase().trim();
+      const reqService = (need.requiredService || '').toLowerCase().trim();
+      
+      let hasCapabilityMatch = false;
+
+      // 1. Check requiredService or requiredSkill if explicitly provided on Need
+      if (reqService) {
+        if (serviceText.includes(reqService) || providerSkills.some((s) => s.includes(reqService) || reqService.includes(s))) {
+          score += 30;
+          reasons.push(`Listed Service: ${need.requiredService}`);
+          hasCapabilityMatch = true;
+        }
+      }
+
+      if (reqSkill) {
+        if (serviceText.includes(reqSkill) || providerSkills.some((s) => s.includes(reqSkill) || reqSkill.includes(s))) {
+          score += 20;
+          reasons.push(`Listed Skill: ${need.requiredSkill}`);
+          hasCapabilityMatch = true;
+        }
+      }
+
+      // 2. Keyword match in title or description if not already matched
+      const words = need.title
+        .toLowerCase()
+        .split(/\s+/)
+        .filter((w) => w.length > 2 && !['need', 'urgent', 'repair', 'service', 'help', 'looking', 'required'].includes(w));
+      
+      const matchedWords = words.filter(
+        (word) => serviceText.includes(word) || providerSkills.some((s) => s.includes(word))
+      );
 
       if (matchedWords.length > 0) {
         score += Math.min(25, matchedWords.length * 10);
-        reasons.push(`Service keywords match (${matchedWords.slice(0, 3).join(', ')})`);
+        reasons.push(`Capability Match (${matchedWords.slice(0, 3).join(', ')})`);
+        hasCapabilityMatch = true;
       }
 
-      // Check provider profile rating & availability
-      const profile = await ProviderProfile.findOne({ user: service.provider._id });
+      // Check provider profile availability status
       if (profile) {
         if (profile.availabilityStatus === 'AVAILABLE_NOW') {
-          score += 10;
+          score += 15;
           reasons.push('Available Now');
+        } else if (profile.availabilityStatus === 'BUSY') {
+          score += 5;
+          reasons.push('Busy (Accepting Queued)');
         }
         if (profile.rating >= 4.5) {
           score += 5;
@@ -68,7 +109,6 @@ export class MatchingService {
         !(needCoords[0] === 0 && needCoords[1] === 0) &&
         !(provCoords[0] === 0 && provCoords[1] === 0)
       ) {
-        // Approximate distance in km using Haversine
         const distKm = MatchingService.calculateDistanceKm(
           needCoords[1],
           needCoords[0],
