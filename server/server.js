@@ -2,6 +2,7 @@ import { createApp } from './src/app.js';
 import { connectDB } from './src/config/db.js';
 import { config } from './src/config/env.js';
 import { AuthService } from './src/services/auth.service.js';
+import { CategoryService } from './src/services/category.service.js';
 
 const startServer = async () => {
   // Connect to Database
@@ -9,6 +10,9 @@ const startServer = async () => {
 
   // Seed default admin account if not existing
   await AuthService.seedAdmin();
+
+  // Seed default categories if not existing
+  await CategoryService.seedCategories();
 
   const app = createApp();
 

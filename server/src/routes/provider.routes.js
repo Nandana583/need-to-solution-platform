@@ -1,54 +1,46 @@
 import express from 'express';
+import {
+  enableProviderCapability,
+  getMyProviderProfile,
+  updateMyProviderProfile,
+  getPublicProviders,
+  getProviderById,
+  createService,
+  getMyServices,
+  updateService,
+  deleteService,
+} from '../controllers/provider.controller.js';
 import { authMiddleware } from '../middleware/auth.middleware.js';
 import { requireProvider } from '../middleware/role.middleware.js';
-import { User } from '../models/User.js';
 import { sendSuccess } from '../utils/apiResponse.js';
-import { asyncHandler } from '../utils/asyncHandler.js';
 
 const router = express.Router();
 
-/**
- * POST /api/v1/providers/enable-capability
- * Allows an existing requester to become a provider on the same account
- */
-router.post(
-  '/enable-capability',
-  authMiddleware,
-  asyncHandler(async (req, res) => {
-    const user = await User.findById(req.user._id);
+// Public routes
+router.get('/public', getPublicProviders);
+router.get('/public/:id', getProviderById);
 
-    if (!user.roles.includes('provider')) {
-      user.roles.push('provider');
-      await user.save();
-    }
+// Enable capability (any authenticated user)
+router.post('/enable-capability', authMiddleware, enableProviderCapability);
 
-    return sendSuccess(
-      res,
-      200,
-      'Provider capability enabled on your account successfully',
-      {
-        user: user.toSafeObject(),
-      }
-    );
-  })
-);
+// Dashboard preview (requires provider role)
+router.get('/dashboard-preview', authMiddleware, requireProvider, (req, res) => {
+  return sendSuccess(res, 200, 'Provider dashboard capability verified', {
+    providerId: req.user._id,
+    displayName: req.user.name,
+    status: 'ACTIVE_PROVIDER',
+    capabilities: ['offer_services', 'share_resources', 'accept_bookings'],
+  });
+});
 
-/**
- * GET /api/v1/providers/dashboard-preview
- * Requires provider role
- */
-router.get(
-  '/dashboard-preview',
-  authMiddleware,
-  requireProvider,
-  asyncHandler(async (req, res) => {
-    return sendSuccess(res, 200, 'Provider dashboard capability verified', {
-      providerId: req.user._id,
-      displayName: req.user.name,
-      status: 'ACTIVE_PROVIDER',
-      capabilities: ['offer_services', 'share_resources', 'accept_bookings'],
-    });
-  })
-);
+// Provider profile management (requires provider role)
+router.get('/profile/me', authMiddleware, requireProvider, getMyProviderProfile);
+router.put('/profile/me', authMiddleware, requireProvider, updateMyProviderProfile);
+
+// Provider services CRUD
+router.post('/services', authMiddleware, requireProvider, createService);
+router.get('/services/me', authMiddleware, requireProvider, getMyServices);
+router.put('/services/:id', authMiddleware, requireProvider, updateService);
+router.delete('/services/:id', authMiddleware, requireProvider, deleteService);
 
 export default router;

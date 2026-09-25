@@ -15,6 +15,18 @@ import { ProviderDashboardPage } from './pages/ProviderDashboardPage';
 import { AdminPage } from './pages/AdminPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 
+// MVP Feature Pages
+import { PostNeedPage } from './pages/PostNeedPage';
+import { NeedDetailPage } from './pages/NeedDetailPage';
+import { MyNeedsPage } from './pages/MyNeedsPage';
+import { BrowseProvidersPage } from './pages/BrowseProvidersPage';
+import { ProviderDetailPage } from './pages/ProviderDetailPage';
+import { BrowseResourcesPage } from './pages/BrowseResourcesPage';
+import { ResourceDetailPage } from './pages/ResourceDetailPage';
+import { ShareResourcePage } from './pages/ShareResourcePage';
+import { BookingsPage } from './pages/BookingsPage';
+import { SharesPage } from './pages/SharesPage';
+
 export function App() {
   return (
     <AuthProvider>
@@ -59,6 +71,10 @@ export function App() {
               <Route path="/" element={<LandingPage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
+              <Route path="/providers" element={<BrowseProvidersPage />} />
+              <Route path="/providers/:id" element={<ProviderDetailPage />} />
+              <Route path="/resources" element={<BrowseResourcesPage />} />
+              <Route path="/resources/:id" element={<ResourceDetailPage />} />
 
               {/* Protected Routes (Any Authenticated User) */}
               <Route
@@ -74,6 +90,54 @@ export function App() {
                 element={
                   <ProtectedRoute>
                     <ProfilePage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/needs"
+                element={
+                  <ProtectedRoute>
+                    <MyNeedsPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/needs/new"
+                element={
+                  <ProtectedRoute>
+                    <PostNeedPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/needs/:id"
+                element={
+                  <ProtectedRoute>
+                    <NeedDetailPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/resources/new"
+                element={
+                  <ProtectedRoute>
+                    <ShareResourcePage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/bookings"
+                element={
+                  <ProtectedRoute>
+                    <BookingsPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/shares"
+                element={
+                  <ProtectedRoute>
+                    <SharesPage />
                   </ProtectedRoute>
                 }
               />

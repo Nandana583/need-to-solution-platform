@@ -9,6 +9,10 @@ import {
   CheckCircle2,
   XCircle,
   RefreshCw,
+  FileText,
+  Calendar,
+  BookOpen,
+  Wrench,
 } from 'lucide-react';
 
 export const AdminPage = () => {
@@ -43,35 +47,8 @@ export const AdminPage = () => {
   }, []);
 
   useEffect(() => {
-    let ignore = false;
-    async function fetchData() {
-      try {
-        const [usersRes, statsRes] = await Promise.all([
-          authApi.getAdminUsers(),
-          authApi.getAdminStats(),
-        ]);
-        if (!ignore) {
-          if (usersRes.success) setUsers(usersRes.users || []);
-          if (statsRes.success) setStats(statsRes.stats || null);
-        }
-      } catch (err) {
-        if (!ignore) {
-          setError(
-            err.response?.data?.error?.message ||
-              'Failed to load admin data. Ensure you have administrator authorization.'
-          );
-        }
-      } finally {
-        if (!ignore) {
-          setLoading(false);
-        }
-      }
-    }
-    fetchData();
-    return () => {
-      ignore = true;
-    };
-  }, []);
+    loadAdminData();
+  }, [loadAdminData]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
@@ -110,39 +87,43 @@ export const AdminPage = () => {
         </div>
       )}
 
-      {/* Admin Stats Grid */}
+      {/* Comprehensive Platform Stats Grid */}
       {stats && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="glass-card rounded-2xl p-5 border border-white/10">
-            <div className="flex items-center justify-between text-slate-400 mb-2">
-              <span className="text-xs font-semibold uppercase">Total Users</span>
-              <Users className="w-5 h-5 text-primary-400" />
-            </div>
-            <div className="text-2xl font-bold text-white">{stats.totalUsers}</div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+          <div className="glass-card rounded-2xl p-4 border border-white/10">
+            <span className="text-[11px] font-semibold uppercase text-slate-400 block mb-1">Total Users</span>
+            <div className="text-2xl font-bold text-white">{stats.totalUsers || 0}</div>
+            <p className="text-[10px] text-slate-400 mt-1">{stats.totalProviders || 0} Providers</p>
           </div>
 
-          <div className="glass-card rounded-2xl p-5 border border-white/10">
-            <div className="flex items-center justify-between text-slate-400 mb-2">
-              <span className="text-xs font-semibold uppercase">Requesters</span>
-              <Layers className="w-5 h-5 text-indigo-400" />
-            </div>
-            <div className="text-2xl font-bold text-white">{stats.totalRequesters}</div>
+          <div className="glass-card rounded-2xl p-4 border border-white/10">
+            <span className="text-[11px] font-semibold uppercase text-slate-400 block mb-1">Total Needs</span>
+            <div className="text-2xl font-bold text-primary-400">{stats.totalNeeds || 0}</div>
+            <p className="text-[10px] text-slate-400 mt-1">{stats.activeNeeds || 0} Active</p>
           </div>
 
-          <div className="glass-card rounded-2xl p-5 border border-white/10">
-            <div className="flex items-center justify-between text-slate-400 mb-2">
-              <span className="text-xs font-semibold uppercase">Providers</span>
-              <Briefcase className="w-5 h-5 text-emerald-400" />
-            </div>
-            <div className="text-2xl font-bold text-white">{stats.totalProviders}</div>
+          <div className="glass-card rounded-2xl p-4 border border-white/10">
+            <span className="text-[11px] font-semibold uppercase text-slate-400 block mb-1">Bookings</span>
+            <div className="text-2xl font-bold text-emerald-400">{stats.totalBookings || 0}</div>
+            <p className="text-[10px] text-slate-400 mt-1">{stats.completedBookings || 0} Completed</p>
           </div>
 
-          <div className="glass-card rounded-2xl p-5 border border-white/10">
-            <div className="flex items-center justify-between text-slate-400 mb-2">
-              <span className="text-xs font-semibold uppercase">Admins</span>
-              <ShieldAlert className="w-5 h-5 text-purple-400" />
-            </div>
-            <div className="text-2xl font-bold text-white">{stats.totalAdmins}</div>
+          <div className="glass-card rounded-2xl p-4 border border-white/10">
+            <span className="text-[11px] font-semibold uppercase text-slate-400 block mb-1">Resources</span>
+            <div className="text-2xl font-bold text-indigo-400">{stats.totalResources || 0}</div>
+            <p className="text-[10px] text-slate-400 mt-1">Books & Notes</p>
+          </div>
+
+          <div className="glass-card rounded-2xl p-4 border border-white/10">
+            <span className="text-[11px] font-semibold uppercase text-slate-400 block mb-1">Services</span>
+            <div className="text-2xl font-bold text-amber-400">{stats.totalServices || 0}</div>
+            <p className="text-[10px] text-slate-400 mt-1">Listed Packages</p>
+          </div>
+
+          <div className="glass-card rounded-2xl p-4 border border-white/10">
+            <span className="text-[11px] font-semibold uppercase text-slate-400 block mb-1">Categories</span>
+            <div className="text-2xl font-bold text-purple-400">{stats.totalCategories || 0}</div>
+            <p className="text-[10px] text-slate-400 mt-1">Active Types</p>
           </div>
         </div>
       )}
