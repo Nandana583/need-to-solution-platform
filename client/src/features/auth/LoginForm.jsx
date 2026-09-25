@@ -49,16 +49,20 @@ export const LoginForm = () => {
         <div className="absolute top-0 right-0 -mt-12 -mr-12 w-40 h-40 bg-primary-500/20 rounded-full blur-3xl pointer-events-none"></div>
         <div className="absolute bottom-0 left-0 -mb-12 -ml-12 w-40 h-40 bg-accent-500/20 rounded-full blur-3xl pointer-events-none"></div>
 
-        {/* Header */}
+        {/* Header with Official Logo */}
         <div className="text-center mb-8 relative z-10">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-tr from-primary-600 to-accent-500 mb-4 shadow-lg shadow-primary-500/30">
-            <LogIn className="w-7 h-7 text-white" />
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white/5 border border-white/10 p-2 mb-4 shadow-xl">
+            <img
+              src="/logo.png"
+              alt="Solvenera logo"
+              className="w-full h-full object-contain"
+            />
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
-            Welcome Back
+            Welcome to Solvenera
           </h1>
-          <p className="text-sm text-slate-400 mt-2">
-            Sign in to access your solutions and requests
+          <p className="text-sm text-slate-400 mt-1.5">
+            Sign in to manage your needs and solution requests
           </p>
         </div>
 

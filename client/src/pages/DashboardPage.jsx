@@ -92,7 +92,7 @@ export const DashboardPage = () => {
               Welcome back, {user?.name || 'User'}!
             </h1>
             <p className="text-slate-400 text-sm mt-1">
-              Your Need-to-Solution central dashboard and request tracking hub.
+              Your Solvenera central dashboard and solution request hub.
             </p>
           </div>
 

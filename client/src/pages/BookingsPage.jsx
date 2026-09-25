@@ -15,6 +15,7 @@ import {
   User,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { RequestCommunication } from '../components/communication/RequestCommunication';
 
 export const BookingsPage = () => {
   const { isProvider } = useAuth();
@@ -236,6 +237,16 @@ export const BookingsPage = () => {
                     Decline reason: {b.rejectionReason}
                   </p>
                 )}
+
+                {/* Integrated Persistent Request Communication */}
+                <div className="pt-2">
+                  <RequestCommunication
+                    bookingId={b._id}
+                    otherPartyName={activeTab === 'requests' ? b.provider?.name : b.requester?.name}
+                    itemTitle={b.service?.title}
+                    currentStatus={b.status}
+                  />
+                </div>
               </div>
 
               {/* Action Buttons */}

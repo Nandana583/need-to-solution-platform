@@ -15,6 +15,12 @@ export const createBooking = asyncHandler(async (req, res) => {
     throw new AppError('Service not found or unavailable', 404, 'SERVICE_NOT_FOUND');
   }
 
+  // Enforce Provider Availability Rules
+  const providerProfile = await ProviderProfile.findOne({ user: service.provider._id });
+  if (providerProfile && (providerProfile.availabilityStatus === 'UNAVAILABLE' || !providerProfile.isActive)) {
+    throw new AppError('This provider is not currently accepting requests.', 400, 'PROVIDER_UNAVAILABLE');
+  }
+
   if (service.provider._id.toString() === req.user._id.toString()) {
     throw new AppError('You cannot book your own service', 400, 'SELF_BOOKING_NOT_ALLOWED');
   }

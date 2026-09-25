@@ -26,6 +26,7 @@ const notificationSchema = new mongoose.Schema(
         'SHARE_COMPLETED',
         'NEED_MATCH_FOUND',
         'REVIEW_RECEIVED',
+        'MESSAGE_RECEIVED',
         'SYSTEM',
       ],
       required: true,

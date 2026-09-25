@@ -12,6 +12,7 @@ import {
   Calendar,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { RequestCommunication } from '../components/communication/RequestCommunication';
 
 export const SharesPage = () => {
   const [activeTab, setActiveTab] = useState('sent'); // 'sent' | 'incoming'
@@ -208,9 +209,9 @@ export const SharesPage = () => {
                   )}
                 </div>
 
-                {req.message && (
+                {req.notes && (
                   <p className="text-xs text-slate-400 italic bg-black/20 p-2.5 rounded-xl border border-white/5">
-                    &ldquo;{req.message}&rdquo;
+                    &ldquo;{req.notes}&rdquo;
                   </p>
                 )}
                 {req.rejectionReason && (
@@ -218,6 +219,16 @@ export const SharesPage = () => {
                     Decline reason: {req.rejectionReason}
                   </p>
                 )}
+
+                {/* Integrated Persistent Request Communication */}
+                <div className="pt-2">
+                  <RequestCommunication
+                    shareRequestId={req._id}
+                    otherPartyName={activeTab === 'sent' ? req.owner?.name : req.requester?.name}
+                    itemTitle={req.resource?.title}
+                    currentStatus={req.status}
+                  />
+                </div>
               </div>
 
               {/* Action Buttons */}

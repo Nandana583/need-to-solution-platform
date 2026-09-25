@@ -39,18 +39,14 @@ export const Navbar = () => {
     <nav className="sticky top-0 z-50 glass-nav">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          {/* Brand Logo */}
-          <Link to="/" className="flex items-center gap-2.5 group">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-primary-600 via-primary-500 to-accent-500 flex items-center justify-center shadow-lg shadow-primary-500/25 group-hover:scale-105 transition-transform duration-200">
-              <Sparkles className="w-5 h-5 text-white animate-pulse-slow" />
-            </div>
-            <div>
-              <span className="text-xl font-bold bg-gradient-to-r from-white via-slate-100 to-slate-400 bg-clip-text text-transparent">
-                NeedToSolution
-              </span>
-              <span className="hidden sm:inline-block text-[10px] text-primary-400 font-medium px-1.5 py-0.5 rounded bg-primary-500/10 border border-primary-500/20 ml-2">
-                Platform
-              </span>
+          {/* Brand Logo Only (Strict Solvenera Branding Rule) */}
+          <Link to="/" className="flex items-center group py-1" title="Solvenera Home">
+            <div className="h-10 w-10 sm:h-11 sm:w-11 rounded-2xl bg-white/5 border border-white/10 p-1.5 flex items-center justify-center group-hover:border-primary-500/50 group-hover:bg-white/10 transition-all duration-300 shadow-lg shadow-blue-500/10">
+              <img
+                src="/logo.png"
+                alt="Solvenera logo"
+                className="w-full h-full object-contain"
+              />
             </div>
           </Link>
 

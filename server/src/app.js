@@ -14,6 +14,7 @@ import bookingRoutes from './routes/booking.routes.js';
 import shareRoutes from './routes/share.routes.js';
 import notificationRoutes from './routes/notification.routes.js';
 import reviewRoutes from './routes/review.routes.js';
+import messageRoutes from './routes/message.routes.js';
 import { errorHandler } from './middleware/error.middleware.js';
 import { AppError } from './utils/AppError.js';
 
@@ -76,6 +77,7 @@ export const createApp = () => {
   app.use('/api/v1/shares', shareRoutes);
   app.use('/api/v1/notifications', notificationRoutes);
   app.use('/api/v1/reviews', reviewRoutes);
+  app.use('/api/v1/messages', messageRoutes);
 
   // 8. 404 Handler for undefined routes
   app.all('*', (req, res, next) => {
