@@ -11,6 +11,7 @@ import {
   Wrench,
   Zap,
 } from 'lucide-react';
+import { OrbGallery } from '../components/OrbGallery';
 
 export const LandingPage = () => {
   const { isAuthenticated } = useAuth();
@@ -63,6 +64,16 @@ export const LandingPage = () => {
             >
               <span>Explore Solutions</span>
             </Link>
+          </div>
+
+          {/* Interactive 3D Orb Gallery */}
+          <div className="w-full mt-10 relative">
+            <div className="absolute inset-0 bg-gradient-to-t from-darkBg via-transparent to-transparent pointer-events-none z-10" />
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs text-slate-300 mb-2">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span>Drag to spin the solution globe</span>
+            </div>
+            <OrbGallery height="450px" />
           </div>
         </div>
 
