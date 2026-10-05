@@ -93,7 +93,7 @@ export const ShareResourcePage = () => {
         <h1 className="text-3xl font-extrabold text-white">
           Share a Textbook, Notes or Tools
         </h1>
-        <p className="text-slate-400 text-sm mt-2">
+        <p className="text-[var(--text-muted)] text-sm mt-2">
           Help peers and students nearby when normal commercial solutions are unavailable.
         </p>
       </div>
@@ -102,11 +102,11 @@ export const ShareResourcePage = () => {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)] mb-2">
                 Category *
               </label>
               {loadingCats ? (
-                <div className="text-xs text-slate-400">Loading...</div>
+                <div className="text-xs text-[var(--text-muted)]">Loading...</div>
               ) : (
                 <select
                   value={categoryId}
@@ -115,7 +115,7 @@ export const ShareResourcePage = () => {
                   required
                 >
                   {categories.map((c) => (
-                    <option key={c._id} value={c._id} className="bg-slate-900 text-white">
+                    <option key={c._id} value={c._id} className="bg-charcoal-900 text-white">
                       {c.name}
                     </option>
                   ))}
@@ -124,7 +124,7 @@ export const ShareResourcePage = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)] mb-2">
                 Resource Type
               </label>
               <select
@@ -132,17 +132,17 @@ export const ShareResourcePage = () => {
                 onChange={(e) => setResourceType(e.target.value)}
                 className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm focus:ring-2 focus:ring-primary-500"
               >
-                <option value="book" className="bg-slate-900 text-white">Textbook</option>
-                <option value="notes" className="bg-slate-900 text-white">Handwritten Lecture Notes</option>
-                <option value="study_material" className="bg-slate-900 text-white">Exam Question Papers / Study Material</option>
-                <option value="equipment" className="bg-slate-900 text-white">Lab Equipment / Tools</option>
-                <option value="device" className="bg-slate-900 text-white">Calculator / Electronic Device</option>
+                <option value="book" className="bg-charcoal-900 text-white">Textbook</option>
+                <option value="notes" className="bg-charcoal-900 text-white">Handwritten Lecture Notes</option>
+                <option value="study_material" className="bg-charcoal-900 text-white">Exam Question Papers / Study Material</option>
+                <option value="equipment" className="bg-charcoal-900 text-white">Lab Equipment / Tools</option>
+                <option value="device" className="bg-charcoal-900 text-white">Calculator / Electronic Device</option>
               </select>
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)] mb-2">
               Resource Title *
             </label>
             <input
@@ -156,7 +156,7 @@ export const ShareResourcePage = () => {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)] mb-2">
               Description *
             </label>
             <textarea
@@ -172,7 +172,7 @@ export const ShareResourcePage = () => {
           {/* Book / Material Metadata */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)] mb-2">
                 Author / Creator
               </label>
               <input
@@ -184,7 +184,7 @@ export const ShareResourcePage = () => {
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)] mb-2">
                 Subject / Branch
               </label>
               <input
@@ -196,7 +196,7 @@ export const ShareResourcePage = () => {
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)] mb-2">
                 Edition / Year
               </label>
               <input
@@ -212,7 +212,7 @@ export const ShareResourcePage = () => {
           {/* Sharing Terms & Location */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)] mb-2">
                 Sharing Mode
               </label>
               <select
@@ -220,15 +220,15 @@ export const ShareResourcePage = () => {
                 onChange={(e) => setShareType(e.target.value)}
                 className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm"
               >
-                <option value="LEND" className="bg-slate-900 text-white">Lend (Return expected)</option>
-                <option value="GIVEAWAY" className="bg-slate-900 text-white">Free Giveaway / Donate</option>
-                <option value="PHOTOCOPY_SHARE" className="bg-slate-900 text-white">Photocopy / Digital Share</option>
-                <option value="HELP" className="bg-slate-900 text-white">Peer Help / Guidance</option>
+                <option value="LEND" className="bg-charcoal-900 text-white">Lend (Return expected)</option>
+                <option value="GIVEAWAY" className="bg-charcoal-900 text-white">Free Giveaway / Donate</option>
+                <option value="PHOTOCOPY_SHARE" className="bg-charcoal-900 text-white">Photocopy / Digital Share</option>
+                <option value="HELP" className="bg-charcoal-900 text-white">Peer Help / Guidance</option>
               </select>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)] mb-2">
                 Condition
               </label>
               <select
@@ -236,15 +236,15 @@ export const ShareResourcePage = () => {
                 onChange={(e) => setCondition(e.target.value)}
                 className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm"
               >
-                <option value="NEW" className="bg-slate-900 text-white">Brand New</option>
-                <option value="LIKE_NEW" className="bg-slate-900 text-white">Like New</option>
-                <option value="GOOD" className="bg-slate-900 text-white">Good</option>
-                <option value="FAIR" className="bg-slate-900 text-white">Fair</option>
+                <option value="NEW" className="bg-charcoal-900 text-white">Brand New</option>
+                <option value="LIKE_NEW" className="bg-charcoal-900 text-white">Like New</option>
+                <option value="GOOD" className="bg-charcoal-900 text-white">Good</option>
+                <option value="FAIR" className="bg-charcoal-900 text-white">Fair</option>
               </select>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)] mb-2">
                 Pickup / Area Label
               </label>
               <input

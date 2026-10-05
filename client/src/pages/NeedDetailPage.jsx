@@ -82,7 +82,7 @@ export const NeedDetailPage = () => {
   if (loading) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-primary-400 animate-spin" />
+        <Loader2 className="w-8 h-8 text-emerald-600 dark:text-emerald-400 animate-spin" />
       </div>
     );
   }
@@ -90,7 +90,7 @@ export const NeedDetailPage = () => {
   if (!need) {
     return (
       <div className="max-w-xl mx-auto my-16 text-center glass-card p-8 rounded-3xl">
-        <h2 className="text-xl font-bold text-white mb-2">Need Not Found</h2>
+        <h2 className="text-xl font-bold text-[var(--text-primary)] mb-2">Need Not Found</h2>
         <Link to="/dashboard" className="glass-btn-primary text-xs inline-flex mt-4">
           Back to Dashboard
         </Link>
@@ -101,29 +101,29 @@ export const NeedDetailPage = () => {
   const currentStepIndex = STATUS_STEPS.indexOf(need.status);
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 transition-colors duration-200">
       {/* Back Link */}
       <Link
         to="/needs"
-        className="inline-flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-white transition-colors"
+        className="inline-flex items-center gap-2 text-xs font-semibold text-[var(--text-secondary)] dark:text-[var(--text-muted)] hover:text-emerald-600 dark:hover:text-white transition-colors"
       >
         <ArrowLeft className="w-4 h-4" />
         <span>Back to My Needs</span>
       </Link>
 
       {/* Header & Status */}
-      <div className="glass-card rounded-3xl p-6 sm:p-8 border border-white/15 relative overflow-hidden shadow-xl">
+      <div className="glass-card rounded-3xl p-6 sm:p-8 border border-black/10 dark:border-white/15 relative overflow-hidden shadow-xl">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6">
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-primary-500/20 text-primary-300 border border-primary-500/30">
+              <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">
                 {need.category?.name}
               </span>
-              <span className="text-xs font-mono text-slate-400">
+              <span className="text-xs font-mono text-[var(--text-muted)] dark:text-[var(--text-muted)]">
                 ID: #{need._id.slice(-6)}
               </span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-white">
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-[var(--text-primary)]">
               {need.title}
             </h1>
           </div>
@@ -132,7 +132,7 @@ export const NeedDetailPage = () => {
             {need.status !== 'CANCELLED' && need.status !== 'COMPLETED' && (
               <button
                 onClick={handleCancelNeed}
-                className="px-3.5 py-2 rounded-xl text-xs font-semibold text-rose-300 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 transition-all"
+                className="px-3.5 py-2 rounded-xl text-xs font-semibold text-rose-700 dark:text-rose-300 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 transition-all"
               >
                 Cancel Need
               </button>
@@ -149,9 +149,9 @@ export const NeedDetailPage = () => {
         </div>
 
         {/* Visual Lifecycle Stepper */}
-        <div className="pt-4 border-t border-white/10">
-          <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-4">
-            Request Lifecycle: <span className="text-primary-400">{need.status}</span>
+        <div className="pt-4 border-t border-black/5 dark:border-white/10">
+          <p className="text-xs font-semibold text-[var(--text-muted)] dark:text-[var(--text-muted)] uppercase tracking-wider mb-4">
+            Request Lifecycle: <span className="text-emerald-600 dark:text-emerald-400 font-bold">{need.status}</span>
           </p>
           <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
             {STATUS_STEPS.map((step, idx) => {
@@ -162,10 +162,10 @@ export const NeedDetailPage = () => {
                   key={step}
                   className={`p-2.5 rounded-xl border text-center transition-all ${
                     isCurrent
-                      ? 'bg-primary-500/20 border-primary-500/50 text-white font-bold shadow-lg shadow-primary-500/20'
+                      ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-700 dark:text-emerald-300 font-bold shadow-lg shadow-emerald-500/20'
                       : isPast
-                      ? 'bg-white/10 border-white/15 text-slate-200'
-                      : 'bg-white/5 border-white/5 text-slate-500 opacity-60'
+                      ? 'bg-black/5 dark:bg-white/10 border-black/10 dark:border-white/15 text-[var(--text-primary)] dark:text-[var(--text-secondary)]'
+                      : 'bg-black/[0.02] dark:bg-white/5 border-black/5 dark:border-white/5 text-charcoal-400 dark:text-[var(--text-muted)] opacity-60'
                   }`}
                 >
                   <div className="text-[10px] font-mono">{idx + 1}</div>
@@ -179,33 +179,33 @@ export const NeedDetailPage = () => {
 
       {/* Need Details Info */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="md:col-span-2 glass-card rounded-2xl p-6 border border-white/10 space-y-4">
-          <h2 className="text-base font-bold text-white">Need Description</h2>
-          <p className="text-sm text-slate-300 whitespace-pre-wrap leading-relaxed">
+        <div className="md:col-span-2 glass-card rounded-2xl p-6 border border-black/10 dark:border-white/10 space-y-4">
+          <h2 className="text-base font-bold text-[var(--text-primary)]">Need Description</h2>
+          <p className="text-sm text-[var(--text-secondary)] whitespace-pre-wrap leading-relaxed">
             {need.description}
           </p>
 
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4 border-t border-white/10 text-xs">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4 border-t border-black/5 dark:border-white/10 text-xs">
             <div>
-              <span className="text-slate-400 block mb-1">Urgency</span>
-              <span className="font-semibold text-white">{need.urgency}</span>
+              <span className="text-[var(--text-muted)] dark:text-[var(--text-muted)] block mb-1">Urgency</span>
+              <span className="font-semibold text-[var(--text-primary)]">{need.urgency}</span>
             </div>
             <div>
-              <span className="text-slate-400 block mb-1">Location</span>
-              <span className="font-semibold text-white flex items-center gap-1">
-                <MapPin className="w-3.5 h-3.5 text-primary-400" />
+              <span className="text-[var(--text-muted)] dark:text-[var(--text-muted)] block mb-1">Location</span>
+              <span className="font-semibold text-[var(--text-primary)] flex items-center gap-1">
+                <MapPin className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
                 {need.locationLabel || 'Flexible / Local'}
               </span>
             </div>
             <div>
-              <span className="text-slate-400 block mb-1">Required Skill/Service</span>
-              <span className="font-semibold text-emerald-300">
+              <span className="text-[var(--text-muted)] dark:text-[var(--text-muted)] block mb-1">Required Skill/Service</span>
+              <span className="font-semibold text-emerald-700 dark:text-emerald-300">
                 {need.requiredService || need.requiredSkill || 'General Service'}
               </span>
             </div>
             <div>
-              <span className="text-slate-400 block mb-1">Preferred Time / Duration</span>
-              <span className="font-semibold text-white">
+              <span className="text-[var(--text-muted)] dark:text-[var(--text-muted)] block mb-1">Preferred Time / Duration</span>
+              <span className="font-semibold text-[var(--text-primary)]">
                 {need.preferredTime || 'Flexible'} {need.duration ? `(${need.duration})` : ''}
               </span>
             </div>
@@ -213,14 +213,14 @@ export const NeedDetailPage = () => {
         </div>
 
         {/* Selected Solution Status */}
-        <div className="glass-card rounded-2xl p-6 border border-white/10 space-y-3">
-          <h2 className="text-base font-bold text-white">Selected Solution</h2>
+        <div className="glass-card rounded-2xl p-6 border border-black/10 dark:border-white/10 space-y-3">
+          <h2 className="text-base font-bold text-[var(--text-primary)]">Selected Solution</h2>
           {need.selectedSolution?.solutionType === 'PROVIDER_SERVICE' ? (
-            <div className="p-4 rounded-xl bg-emerald-950/20 border border-emerald-500/30">
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/30 text-emerald-300">
+            <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30">
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-700 dark:text-emerald-300">
                 COMMERCIAL BOOKING
               </span>
-              <p className="text-xs text-slate-200 mt-2">
+              <p className="text-xs text-[var(--text-primary)] mt-2 leading-relaxed">
                 Connected with a professional service provider. Check your Bookings tab for status updates.
               </p>
               <Link to="/bookings" className="glass-btn-primary py-2 px-3 text-xs mt-3 block text-center">
@@ -228,11 +228,11 @@ export const NeedDetailPage = () => {
               </Link>
             </div>
           ) : need.selectedSolution?.solutionType === 'COMMUNITY_RESOURCE' ? (
-            <div className="p-4 rounded-xl bg-primary-950/20 border border-primary-500/30">
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-primary-500/30 text-primary-300">
+            <div className="p-4 rounded-xl bg-teal-500/10 border border-teal-500/30">
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-teal-500/20 text-teal-700 dark:text-teal-300">
                 COMMUNITY SHARE
               </span>
-              <p className="text-xs text-slate-200 mt-2">
+              <p className="text-xs text-[var(--text-primary)] mt-2 leading-relaxed">
                 Connected with a community resource owner. Check your Shares tab for status updates.
               </p>
               <Link to="/shares" className="glass-btn-secondary py-2 px-3 text-xs mt-3 block text-center">
@@ -240,7 +240,7 @@ export const NeedDetailPage = () => {
               </Link>
             </div>
           ) : (
-            <div className="text-xs text-slate-400 py-4 text-center">
+            <div className="text-xs text-[var(--text-muted)] dark:text-[var(--text-muted)] py-4 text-center">
               No solution selected yet. Choose from matched options below.
             </div>
           )}
@@ -249,14 +249,14 @@ export const NeedDetailPage = () => {
 
       {/* Matched Solutions Section */}
       <div className="space-y-6">
-        <h2 className="text-xl font-bold text-white flex items-center gap-2">
-          <Sparkles className="w-5 h-5 text-primary-400" />
+        <h2 className="text-xl font-bold text-[var(--text-primary)] flex items-center gap-2">
+          <Sparkles className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
           Two-Phase Match Results
         </h2>
 
         {/* Phase 1 Matches */}
         <div className="space-y-3">
-          <h3 className="text-sm font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-2">
+          <h3 className="text-sm font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400 flex items-center gap-2">
             <Briefcase className="w-4 h-4" />
             Phase 1: Professional Providers ({need.matchedProviders?.length || 0})
           </h3>
@@ -266,29 +266,29 @@ export const NeedDetailPage = () => {
               {need.matchedProviders.map((m, idx) => (
                 <div
                   key={idx}
-                  className="glass-card rounded-2xl p-5 border border-emerald-500/20 bg-emerald-950/10 flex flex-col justify-between"
+                  className="glass-card rounded-2xl p-5 border border-emerald-500/20 bg-emerald-500/[0.03] dark:bg-emerald-950/10 flex flex-col justify-between"
                 >
                   <div>
                     <div className="flex items-start justify-between">
                       <div>
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300">
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-700 dark:text-emerald-300">
                           {m.matchScore}% Match
                         </span>
-                        <h4 className="text-base font-bold text-white mt-1">
+                        <h4 className="text-base font-bold text-[var(--text-primary)] mt-1">
                           {m.service?.title}
                         </h4>
-                        <p className="text-xs text-emerald-300">
+                        <p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">
                           Provider: {m.provider?.name}
                         </p>
                       </div>
-                      <span className="text-base font-bold text-white">
+                      <span className="text-base font-bold text-[var(--text-primary)]">
                         ${m.service?.rateAmount}
                       </span>
                     </div>
-                    <p className="text-xs text-slate-300 mt-2 line-clamp-2">
+                    <p className="text-xs text-[var(--text-secondary)] mt-2 line-clamp-2 leading-relaxed">
                       {m.service?.description}
                     </p>
-                    <p className="text-[11px] text-emerald-300/80 mt-2 bg-black/20 p-2 rounded-lg">
+                    <p className="text-[11px] text-emerald-700 dark:text-emerald-300/90 mt-2 bg-black/[0.03] dark:bg-black/20 p-2 rounded-lg">
                       {m.matchReason}
                     </p>
                   </div>
@@ -302,7 +302,7 @@ export const NeedDetailPage = () => {
               ))}
             </div>
           ) : (
-            <div className="p-4 rounded-xl glass-card text-xs text-slate-400 border border-white/5">
+            <div className="p-4 rounded-xl glass-card text-xs text-[var(--text-muted)] dark:text-[var(--text-muted)] border border-black/5 dark:border-white/5">
               No direct commercial service matched. Check community fallbacks below.
             </div>
           )}
@@ -310,7 +310,7 @@ export const NeedDetailPage = () => {
 
         {/* Phase 2 Matches */}
         <div className="space-y-3 pt-4">
-          <h3 className="text-sm font-bold uppercase tracking-wider text-primary-400 flex items-center gap-2">
+          <h3 className="text-sm font-bold uppercase tracking-wider text-teal-700 dark:text-teal-400 flex items-center gap-2">
             <Users className="w-4 h-4" />
             Phase 2: Community Fallback Resources ({need.matchedResources?.length || 0})
           </h3>
@@ -320,35 +320,35 @@ export const NeedDetailPage = () => {
               {need.matchedResources.map((m, idx) => (
                 <div
                   key={idx}
-                  className="glass-card rounded-2xl p-5 border border-primary-500/20 bg-primary-950/10 flex flex-col justify-between"
+                  className="glass-card rounded-2xl p-5 border border-teal-500/20 bg-teal-500/[0.03] dark:bg-teal-950/10 flex flex-col justify-between"
                 >
                   <div>
                     <div className="flex items-start justify-between">
                       <div>
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-primary-500/20 text-primary-300">
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-teal-500/20 text-teal-700 dark:text-teal-300">
                           Community Fallback • {m.matchScore}%
                         </span>
-                        <h4 className="text-base font-bold text-white mt-1">
+                        <h4 className="text-base font-bold text-[var(--text-primary)] mt-1">
                           {m.resource?.title}
                         </h4>
-                        <p className="text-xs text-primary-300">
+                        <p className="text-xs text-teal-600 dark:text-teal-400 font-medium">
                           Owner: {m.owner?.name}
                         </p>
                       </div>
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300">
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-coral-500/20 text-coral-700 dark:text-coral-300">
                         {m.resource?.shareType}
                       </span>
                     </div>
-                    <p className="text-xs text-slate-300 mt-2 line-clamp-2">
+                    <p className="text-xs text-[var(--text-secondary)] mt-2 line-clamp-2 leading-relaxed">
                       {m.resource?.description}
                     </p>
-                    <p className="text-[11px] text-primary-300/80 mt-2 bg-black/20 p-2 rounded-lg">
+                    <p className="text-[11px] text-teal-700 dark:text-teal-300/90 mt-2 bg-black/[0.03] dark:bg-black/20 p-2 rounded-lg">
                       {m.matchReason}
                     </p>
                   </div>
                   <Link
                     to={`/resources/${m.resource?._id || m.resource?.id}`}
-                    className="glass-btn-secondary py-2 text-xs mt-4 text-center"
+                    className="glass-btn-secondary py-2 text-xs mt-4 text-center border-teal-500/30 text-teal-700 dark:text-teal-300"
                   >
                     View Resource & Request Share
                   </Link>
@@ -356,7 +356,7 @@ export const NeedDetailPage = () => {
               ))}
             </div>
           ) : (
-            <div className="p-4 rounded-xl glass-card text-xs text-slate-400 border border-white/5">
+            <div className="p-4 rounded-xl glass-card text-xs text-[var(--text-muted)] dark:text-[var(--text-muted)] border border-black/5 dark:border-white/5">
               We couldn't find a suitable community match right now.
             </div>
           )}

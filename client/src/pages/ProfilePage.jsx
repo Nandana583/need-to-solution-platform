@@ -10,6 +10,9 @@ import {
   Loader2,
   CheckCircle2,
   KeyRound,
+  ShieldCheck,
+  MapPin,
+  Phone,
 } from 'lucide-react';
 
 const profileSchema = z.object({
@@ -89,28 +92,28 @@ export const ProfilePage = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 transition-colors duration-200">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-extrabold text-white tracking-tight">Account Settings</h1>
-        <p className="text-slate-400 text-sm mt-1">
+        <h1 className="text-3xl font-extrabold text-[var(--text-primary)] tracking-tight">Account Settings</h1>
+        <p className="text-[var(--text-secondary)] dark:text-[var(--text-muted)] text-sm mt-1">
           Manage your personal details, location preferences, and security credentials.
         </p>
       </div>
 
       {/* Account Info & Roles Card */}
-      <div className="glass-card rounded-3xl p-6 sm:p-8 border border-white/15">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b border-white/10">
+      <div className="glass-card rounded-3xl p-6 sm:p-8 border border-black/10 dark:border-white/15">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b border-black/5 dark:border-white/10">
           <div className="flex items-center gap-4">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-primary-600 via-primary-500 to-accent-500 flex items-center justify-center font-bold text-2xl text-white shadow-lg shadow-primary-500/30">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-600 via-teal-600 to-mint-500 flex items-center justify-center font-bold text-2xl text-white shadow-lg shadow-emerald-500/20">
               {user?.name?.charAt(0)?.toUpperCase() || 'U'}
             </div>
             <div>
-              <h2 className="text-xl font-bold text-white">{user?.name}</h2>
-              <p className="text-xs text-slate-400">{user?.email}</p>
+              <h2 className="text-xl font-bold text-[var(--text-primary)]">{user?.name}</h2>
+              <p className="text-xs text-[var(--text-muted)] dark:text-[var(--text-muted)]">{user?.email}</p>
               <div className="flex items-center gap-1.5 mt-2">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                <span className="text-xs text-emerald-400 font-medium">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+                <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">
                   {user?.isActive ? 'Account Active' : 'Account Inactive'}
                 </span>
               </div>
@@ -118,7 +121,7 @@ export const ProfilePage = () => {
           </div>
 
           <div className="flex flex-col items-start sm:items-end gap-1.5">
-            <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+            <span className="text-xs font-semibold text-[var(--text-muted)] dark:text-[var(--text-muted)] uppercase tracking-wider">
               Assigned Roles
             </span>
             <div className="flex gap-1.5">
@@ -127,10 +130,10 @@ export const ProfilePage = () => {
                   key={role}
                   className={`text-xs font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${
                     role === 'admin'
-                      ? 'bg-purple-500/20 text-purple-300 border border-purple-500/40'
+                      ? 'bg-terracotta-500/20 text-terracotta-700 dark:text-terracotta-300 border border-terracotta-500/40'
                       : role === 'provider'
-                      ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
-                      : 'bg-primary-500/20 text-primary-300 border border-primary-500/40'
+                      ? 'bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border border-emerald-500/40'
+                      : 'bg-teal-500/20 text-teal-700 dark:text-teal-300 border border-teal-500/40'
                   }`}
                 >
                   {role}
@@ -142,74 +145,66 @@ export const ProfilePage = () => {
 
         {/* Profile Edit Form */}
         <form onSubmit={handleProfileSubmit(onProfileSubmit)} className="mt-6 space-y-5">
-          <h3 className="text-base font-semibold text-white flex items-center gap-2">
-            <User className="w-4 h-4 text-primary-400" />
+          <h3 className="text-base font-semibold text-[var(--text-primary)] flex items-center gap-2">
+            <User className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
             Personal Information
           </h3>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {/* Name */}
             <div>
-              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+              <label className="block text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">
                 Full Name
               </label>
-              <div className="relative">
-                <input
-                  type="text"
-                  {...registerProfile('name')}
-                  className={`w-full px-4 py-2.5 glass-input ${
-                    profileErrors.name ? 'border-rose-500' : ''
-                  }`}
-                />
-              </div>
+              <input
+                type="text"
+                {...registerProfile('name')}
+                className={`w-full px-4 py-2.5 glass-input ${
+                  profileErrors.name ? 'border-rose-500' : ''
+                }`}
+              />
               {profileErrors.name && (
-                <p className="mt-1 text-xs text-rose-400">{profileErrors.name.message}</p>
+                <p className="mt-1 text-xs text-rose-600 dark:text-rose-400">{profileErrors.name.message}</p>
               )}
             </div>
 
             {/* Email (Read only) */}
             <div>
-              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
-                Email Address <span className="text-slate-500 lowercase">(read-only)</span>
+              <label className="block text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">
+                Email Address <span className="text-charcoal-400 dark:text-[var(--text-muted)] lowercase">(read-only)</span>
               </label>
-              <div className="relative">
-                <input
-                  type="email"
-                  value={user?.email || ''}
-                  disabled
-                  className="w-full px-4 py-2.5 glass-input opacity-60 cursor-not-allowed"
-                />
-              </div>
+              <input
+                type="email"
+                value={user?.email || ''}
+                disabled
+                className="w-full px-4 py-2.5 glass-input opacity-60 cursor-not-allowed"
+              />
             </div>
 
             {/* Phone */}
             <div>
-              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+              <label className="block text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">
                 Phone Number
               </label>
-              <div className="relative">
-                <input
-                  type="tel"
-                  placeholder="+1 (555) 000-0000"
-                  {...registerProfile('phone')}
-                  className="w-full px-4 py-2.5 glass-input"
-                />
-              </div>
+              <input
+                type="tel"
+                placeholder="+1 (555) 000-0000"
+                {...registerProfile('phone')}
+                className="w-full px-4 py-2.5 glass-input"
+              />
             </div>
 
             {/* Location Label */}
             <div>
-              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+              <label className="block text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">
                 General Area / City
               </label>
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="e.g. Hyderabad, India"
-                  {...registerProfile('locationLabel')}
-                  className="w-full px-4 py-2.5 glass-input"
-                />
-              </div>
+              <input
+                type="text"
+                placeholder="e.g. Hyderabad, India"
+                {...registerProfile('locationLabel')}
+                className="w-full px-4 py-2.5 glass-input"
+              />
             </div>
           </div>
 
@@ -233,19 +228,19 @@ export const ProfilePage = () => {
       </div>
 
       {/* Security & Password Change Card */}
-      <div className="glass-card rounded-3xl p-6 sm:p-8 border border-white/15">
-        <h3 className="text-base font-semibold text-white flex items-center gap-2 mb-2">
-          <KeyRound className="w-4 h-4 text-accent-500" />
+      <div className="glass-card rounded-3xl p-6 sm:p-8 border border-black/10 dark:border-white/15">
+        <h3 className="text-base font-semibold text-[var(--text-primary)] flex items-center gap-2 mb-2">
+          <KeyRound className="w-4 h-4 text-coral-600 dark:text-coral-400" />
           Change Password
         </h3>
-        <p className="text-xs text-slate-400 mb-6">
+        <p className="text-xs text-[var(--text-muted)] dark:text-[var(--text-muted)] mb-6">
           For security, changing your password will revoke all other active refresh sessions on other devices.
         </p>
 
         <form onSubmit={handlePasswordSubmit(onPasswordSubmit)} className="space-y-4 max-w-xl">
           {/* Current Password */}
           <div>
-            <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+            <label className="block text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">
               Current Password
             </label>
             <div className="relative">
@@ -261,13 +256,13 @@ export const ProfilePage = () => {
               <button
                 type="button"
                 onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-200"
+                className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-charcoal-400 dark:text-[var(--text-muted)] hover:text-[var(--text-secondary)] dark:hover:text-[var(--text-secondary)]"
               >
                 {showCurrentPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
             </div>
             {passwordErrors.currentPassword && (
-              <p className="mt-1 text-xs text-rose-400">
+              <p className="mt-1 text-xs text-rose-600 dark:text-rose-400">
                 {passwordErrors.currentPassword.message}
               </p>
             )}
@@ -275,7 +270,7 @@ export const ProfilePage = () => {
 
           {/* New Password */}
           <div>
-            <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+            <label className="block text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">
               New Password
             </label>
             <div className="relative">
@@ -291,19 +286,19 @@ export const ProfilePage = () => {
               <button
                 type="button"
                 onClick={() => setShowNewPassword(!showNewPassword)}
-                className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-200"
+                className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-charcoal-400 dark:text-[var(--text-muted)] hover:text-[var(--text-secondary)] dark:hover:text-[var(--text-secondary)]"
               >
                 {showNewPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
             </div>
             {passwordErrors.newPassword && (
-              <p className="mt-1 text-xs text-rose-400">{passwordErrors.newPassword.message}</p>
+              <p className="mt-1 text-xs text-rose-600 dark:text-rose-400">{passwordErrors.newPassword.message}</p>
             )}
           </div>
 
           {/* Confirm New Password */}
           <div>
-            <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+            <label className="block text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">
               Confirm New Password
             </label>
             <div className="relative">
@@ -319,13 +314,13 @@ export const ProfilePage = () => {
               <button
                 type="button"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-200"
+                className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-charcoal-400 dark:text-[var(--text-muted)] hover:text-[var(--text-secondary)] dark:hover:text-[var(--text-secondary)]"
               >
                 {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
             </div>
             {passwordErrors.confirmPassword && (
-              <p className="mt-1 text-xs text-rose-400">
+              <p className="mt-1 text-xs text-rose-600 dark:text-rose-400">
                 {passwordErrors.confirmPassword.message}
               </p>
             )}

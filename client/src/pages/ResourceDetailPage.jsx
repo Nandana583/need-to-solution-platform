@@ -85,7 +85,7 @@ export const ResourceDetailPage = () => {
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
       <Link
         to="/resources"
-        className="inline-flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-white transition-colors"
+        className="inline-flex items-center gap-2 text-xs font-semibold text-[var(--text-muted)] hover:text-white transition-colors"
       >
         <ArrowLeft className="w-4 h-4" />
         <span>Back to Resources</span>
@@ -99,7 +99,7 @@ export const ResourceDetailPage = () => {
               <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-primary-500/20 text-primary-300 border border-primary-500/30">
                 {resource.category?.name}
               </span>
-              <span className="text-xs font-bold px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+              <span className="text-xs font-bold px-2 py-0.5 rounded bg-teal-500/15 text-teal-300 border border-teal-500/25">
                 {resource.shareType}
               </span>
             </div>
@@ -120,29 +120,29 @@ export const ResourceDetailPage = () => {
         {/* Metadata Details */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 rounded-2xl bg-black/20 border border-white/5 text-xs">
           <div>
-            <span className="text-slate-400 block mb-0.5">Author</span>
+            <span className="text-[var(--text-muted)] block mb-0.5">Author</span>
             <span className="font-semibold text-white">{resource.metadata?.author || 'Not specified'}</span>
           </div>
           <div>
-            <span className="text-slate-400 block mb-0.5">Subject / Course</span>
+            <span className="text-[var(--text-muted)] block mb-0.5">Subject / Course</span>
             <span className="font-semibold text-white">{resource.metadata?.subject || 'General'}</span>
           </div>
           <div>
-            <span className="text-slate-400 block mb-0.5">Item Condition</span>
+            <span className="text-[var(--text-muted)] block mb-0.5">Item Condition</span>
             <span className="font-semibold text-emerald-400">{resource.condition}</span>
           </div>
           <div>
-            <span className="text-slate-400 block mb-0.5">Availability</span>
+            <span className="text-[var(--text-muted)] block mb-0.5">Availability</span>
             <span className="font-semibold text-primary-300">{resource.availabilityStatus}</span>
           </div>
         </div>
 
         {/* Description */}
         <div>
-          <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-400 mb-2">
+          <h3 className="text-sm font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-2">
             Resource Description
           </h3>
-          <p className="text-sm text-slate-200 leading-relaxed whitespace-pre-wrap">
+          <p className="text-sm text-[var(--text-secondary)] leading-relaxed whitespace-pre-wrap">
             {resource.description}
           </p>
         </div>
@@ -154,13 +154,13 @@ export const ResourceDetailPage = () => {
               {resource.owner?.name?.charAt(0) || 'U'}
             </div>
             <div>
-              <p className="text-xs text-slate-400">Shared by Community Member</p>
+              <p className="text-xs text-[var(--text-muted)]">Shared by Community Member</p>
               <h4 className="text-sm font-bold text-white">{resource.owner?.name}</h4>
             </div>
           </div>
 
           {resource.locationLabel && (
-            <span className="text-xs text-slate-300 flex items-center gap-1">
+            <span className="text-xs text-[var(--text-secondary)] flex items-center gap-1">
               <MapPin className="w-3.5 h-3.5 text-primary-400" />
               {resource.locationLabel}
             </span>
@@ -177,7 +177,7 @@ export const ResourceDetailPage = () => {
 
             <div className="space-y-3 pt-2">
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
+                <label className="block text-xs font-semibold text-[var(--text-secondary)] mb-1">
                   How many days do you need this?
                 </label>
                 <input
@@ -191,7 +191,7 @@ export const ResourceDetailPage = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
+                <label className="block text-xs font-semibold text-[var(--text-secondary)] mb-1">
                   Message for {resource.owner?.name}
                 </label>
                 <textarea
@@ -207,7 +207,7 @@ export const ResourceDetailPage = () => {
             <div className="flex items-center justify-end gap-3 pt-4 border-t border-white/10">
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="px-4 py-2 text-xs font-semibold text-slate-300 hover:text-white"
+                className="px-4 py-2 text-xs font-semibold text-[var(--text-secondary)] hover:text-white"
               >
                 Cancel
               </button>

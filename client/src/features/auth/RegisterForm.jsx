@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
+import { SolveneraLogo } from '../../components/layout/SolveneraLogo';
 import {
   User,
   Mail,
@@ -37,6 +38,14 @@ const registerSchema = z
     message: 'Passwords do not match',
     path: ['confirmPassword'],
   });
+
+const FieldError = ({ message }) =>
+  message ? (
+    <p className="mt-1.5 text-xs text-rose-500 font-medium flex items-center gap-1">
+      <AlertCircle className="w-3 h-3 shrink-0" />
+      {message}
+    </p>
+  ) : null;
 
 export const RegisterForm = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -77,43 +86,45 @@ export const RegisterForm = () => {
     }
   };
 
+  const inputClass = (hasError) =>
+    `w-full pl-10 pr-4 py-2.5 glass-input ${
+      hasError ? 'border-rose-500/60 focus:border-rose-500 focus:ring-rose-500/20' : ''
+    }`;
+
   return (
     <div className="w-full max-w-lg mx-auto">
-      <div className="glass-card rounded-3xl p-8 sm:p-10 border border-white/15 relative overflow-hidden shadow-2xl">
-        {/* Ambient Glow */}
-        <div className="absolute top-0 right-0 -mt-12 -mr-12 w-48 h-48 bg-primary-500/20 rounded-full blur-3xl pointer-events-none"></div>
-        <div className="absolute bottom-0 left-0 -mb-12 -ml-12 w-48 h-48 bg-accent-500/20 rounded-full blur-3xl pointer-events-none"></div>
+      <div className="glass-card rounded-3xl p-8 sm:p-10 border border-black/10 dark:border-white/15 relative overflow-hidden shadow-2xl">
+        {/* Ambient Glows */}
+        <div className="absolute top-0 right-0 -mt-16 -mr-16 w-48 h-48 bg-emerald-500/12 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-0 -mb-16 -ml-16 w-48 h-48 bg-teal-500/10 rounded-full blur-3xl pointer-events-none" />
 
-        {/* Header with Official Logo */}
+        {/* Header */}
         <div className="text-center mb-6 relative z-10">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white/5 border border-white/10 p-2 mb-3 shadow-xl">
-            <img
-              src="/logo.png"
-              alt="Solvenera logo"
-              className="w-full h-full object-contain"
-            />
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-black/[0.04] dark:bg-white/5 border border-black/10 dark:border-white/10 p-3 mb-4 shadow-xl">
+            <SolveneraLogo className="w-full h-full" />
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
-            Create Your Solvenera Account
+          <h1 className="text-2xl sm:text-3xl font-bold text-[var(--text-primary)] tracking-tight">
+            Create Your Account
           </h1>
-          <p className="text-sm text-slate-400 mt-1.5">
+          <p className="text-sm text-[var(--text-muted)] mt-1.5">
             Join the community solution network
           </p>
 
-          {/* Unified Single Account Badge Notice */}
-          <div className="mt-4 p-3 rounded-2xl bg-primary-500/10 border border-primary-500/20 text-left flex items-start gap-2.5">
-            <Sparkles className="w-4 h-4 text-primary-400 shrink-0 mt-0.5" />
-            <p className="text-xs text-primary-200">
-              <strong className="font-semibold text-white">Unified Account:</strong> You can request services/resources now, and easily offer your own services or share study materials anytime from your dashboard.
+          {/* Unified Account Notice */}
+          <div className="mt-4 p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-left flex items-start gap-2.5">
+            <Sparkles className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+            <p className="text-xs text-[var(--text-secondary)]">
+              <strong className="font-semibold text-emerald-700 dark:text-emerald-300">Unified Account:</strong>{' '}
+              Request services now, and offer your own services or share resources anytime from your dashboard.
             </p>
           </div>
         </div>
 
         {/* Server Error Alert */}
         {serverError && (
-          <div className="mb-6 p-4 rounded-2xl bg-rose-500/10 border border-rose-500/30 flex items-start gap-3 animate-fade-in">
-            <AlertCircle className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" />
-            <p className="text-sm text-rose-300 font-medium">{serverError}</p>
+          <div className="mb-5 p-4 rounded-2xl bg-rose-500/10 border border-rose-500/25 flex items-start gap-3 animate-fade-in">
+            <AlertCircle className="w-5 h-5 text-rose-500 shrink-0 mt-0.5" />
+            <p className="text-sm text-rose-600 dark:text-rose-400 font-medium">{serverError}</p>
           </div>
         )}
 
@@ -121,164 +132,176 @@ export const RegisterForm = () => {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 relative z-10" noValidate>
           {/* Name Field */}
           <div>
-            <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+            <label
+              htmlFor="reg-name"
+              className="block text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5"
+            >
               Full Name
             </label>
             <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                <User className="w-5 h-5" />
+              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[var(--text-muted)]">
+                <User className="w-4 h-4" />
               </div>
               <input
+                id="reg-name"
                 type="text"
-                placeholder="John Doe"
+                placeholder="Your full name"
                 {...register('name')}
-                className={`w-full pl-11 pr-4 py-2.5 glass-input ${
-                  errors.name ? 'border-rose-500/60 focus:border-rose-500' : ''
-                }`}
+                className={inputClass(errors.name)}
                 autoComplete="name"
               />
             </div>
-            {errors.name && (
-              <p className="mt-1 text-xs text-rose-400 font-medium">{errors.name.message}</p>
-            )}
+            <FieldError message={errors.name?.message} />
           </div>
 
           {/* Email Field */}
           <div>
-            <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+            <label
+              htmlFor="reg-email"
+              className="block text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5"
+            >
               Email Address
             </label>
             <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                <Mail className="w-5 h-5" />
+              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[var(--text-muted)]">
+                <Mail className="w-4 h-4" />
               </div>
               <input
+                id="reg-email"
                 type="email"
                 placeholder="name@example.com"
                 {...register('email')}
-                className={`w-full pl-11 pr-4 py-2.5 glass-input ${
-                  errors.email ? 'border-rose-500/60 focus:border-rose-500' : ''
-                }`}
+                className={inputClass(errors.email)}
                 autoComplete="email"
               />
             </div>
-            {errors.email && (
-              <p className="mt-1 text-xs text-rose-400 font-medium">{errors.email.message}</p>
-            )}
+            <FieldError message={errors.email?.message} />
           </div>
 
           {/* Phone Field (Optional) */}
           <div>
-            <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
-              Phone Number <span className="text-slate-500 lowercase font-normal">(optional)</span>
+            <label
+              htmlFor="reg-phone"
+              className="block text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5"
+            >
+              Phone{' '}
+              <span className="text-[var(--text-muted)] lowercase font-normal">(optional)</span>
             </label>
             <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                <Phone className="w-5 h-5" />
+              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[var(--text-muted)]">
+                <Phone className="w-4 h-4" />
               </div>
               <input
+                id="reg-phone"
                 type="tel"
                 placeholder="+1 (555) 000-0000"
                 {...register('phone')}
-                className="w-full pl-11 pr-4 py-2.5 glass-input"
+                className="w-full pl-10 pr-4 py-2.5 glass-input"
                 autoComplete="tel"
               />
             </div>
           </div>
 
-          {/* Password Field */}
-          <div>
-            <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
-              Password
-            </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                <Lock className="w-5 h-5" />
-              </div>
-              <input
-                type={showPassword ? 'text' : 'password'}
-                placeholder="Min. 8 chars, 1 uppercase, 1 number"
-                {...register('password')}
-                className={`w-full pl-11 pr-12 py-2.5 glass-input ${
-                  errors.password ? 'border-rose-500/60 focus:border-rose-500' : ''
-                }`}
-                autoComplete="new-password"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-200"
-                tabIndex={-1}
+          {/* Password Row */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* Password */}
+            <div>
+              <label
+                htmlFor="reg-password"
+                className="block text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5"
               >
-                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-              </button>
+                Password
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[var(--text-muted)]">
+                  <Lock className="w-4 h-4" />
+                </div>
+                <input
+                  id="reg-password"
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="Min 8 chars, 1 uppercase, 1 #"
+                  {...register('password')}
+                  className={`w-full pl-10 pr-10 py-2.5 glass-input ${
+                    errors.password ? 'border-rose-500/60 focus:border-rose-500 focus:ring-rose-500/20' : ''
+                  }`}
+                  autoComplete="new-password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
+                  tabIndex={-1}
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
+              <FieldError message={errors.password?.message} />
             </div>
-            {errors.password && (
-              <p className="mt-1 text-xs text-rose-400 font-medium">{errors.password.message}</p>
-            )}
-          </div>
 
-          {/* Confirm Password Field */}
-          <div>
-            <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
-              Confirm Password
-            </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                <Lock className="w-5 h-5" />
-              </div>
-              <input
-                type={showConfirmPassword ? 'text' : 'password'}
-                placeholder="Re-enter password"
-                {...register('confirmPassword')}
-                className={`w-full pl-11 pr-12 py-2.5 glass-input ${
-                  errors.confirmPassword ? 'border-rose-500/60 focus:border-rose-500' : ''
-                }`}
-                autoComplete="new-password"
-              />
-              <button
-                type="button"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-200"
-                tabIndex={-1}
+            {/* Confirm Password */}
+            <div>
+              <label
+                htmlFor="reg-confirm"
+                className="block text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5"
               >
-                {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-              </button>
+                Confirm
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[var(--text-muted)]">
+                  <Lock className="w-4 h-4" />
+                </div>
+                <input
+                  id="reg-confirm"
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  placeholder="Re-enter password"
+                  {...register('confirmPassword')}
+                  className={`w-full pl-10 pr-10 py-2.5 glass-input ${
+                    errors.confirmPassword ? 'border-rose-500/60 focus:border-rose-500 focus:ring-rose-500/20' : ''
+                  }`}
+                  autoComplete="new-password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
+                  tabIndex={-1}
+                  aria-label={showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'}
+                >
+                  {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
+              <FieldError message={errors.confirmPassword?.message} />
             </div>
-            {errors.confirmPassword && (
-              <p className="mt-1 text-xs text-rose-400 font-medium">
-                {errors.confirmPassword.message}
-              </p>
-            )}
           </div>
 
           {/* Submit Button */}
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full glass-btn-primary py-3.5 text-base mt-4"
+            className="w-full glass-btn-primary py-3.5 text-base mt-3"
           >
             {isSubmitting ? (
               <>
                 <Loader2 className="w-5 h-5 animate-spin" />
-                <span>Creating Account...</span>
+                <span>Creating Account…</span>
               </>
             ) : (
               <>
-                <span>Complete Registration</span>
-                <UserPlus className="w-5 h-5 ml-1" />
+                <span>Create Account</span>
+                <UserPlus className="w-5 h-5" />
               </>
             )}
           </button>
         </form>
 
         {/* Footer */}
-        <div className="mt-6 text-center border-t border-white/10 pt-5 relative z-10">
-          <p className="text-sm text-slate-400">
+        <div className="mt-6 text-center border-t border-black/8 dark:border-white/10 pt-5 relative z-10">
+          <p className="text-sm text-[var(--text-muted)]">
             Already have an account?{' '}
             <Link
               to="/login"
-              className="text-primary-400 hover:text-primary-300 font-semibold transition-colors"
+              className="text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 font-semibold transition-colors"
             >
               Sign In
             </Link>

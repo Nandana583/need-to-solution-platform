@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <defs>
+    <!-- Emerald to Mint dynamic gradient -->
+    <linearGradient id="solvenera-emerald-mint" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#059669" />
+      <stop offset="50%" stop-color="#10b981" />
+      <stop offset="100%" stop-color="#34d399" />
+    </linearGradient>
+    
+    <!-- Warm Peach to Terracotta accent gradient -->
+    <linearGradient id="solvenera-peach-coral" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#e07a5f" />
+      <stop offset="50%" stop-color="#f28e6b" />
+      <stop offset="100%" stop-color="#fbb086" />
+    </linearGradient>
+
+    <!-- Deep Teal Glow Filter -->
+    <filter id="emerald-glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#10b981" flood-opacity="0.3" />
+    </filter>
+  </defs>
+
+  <!-- Flowing Ribbon 1: Need to Connection (Emerald/Mint Loop) -->
+  <path
+    d="M 68 18 C 88 18 100 32 100 48 C 100 68 76 74 58 78 C 38 82 24 88 24 100 C 24 110 34 116 46 116 C 62 116 76 106 82 96 C 84 92 89 91 92 94 C 95 97 95 102 91 107 C 82 120 64 124 46 124 C 28 124 14 114 14 98 C 14 78 38 72 56 68 C 76 64 90 58 90 46 C 90 36 82 28 68 28 C 54 28 42 36 38 46 C 36 50 31 52 27 50 C 23 48 22 43 25 38 C 32 24 48 18 68 18 Z"
+    fill="url(#solvenera-emerald-mint)"
+    filter="url(#emerald-glow)"
+  />
+
+  <!-- Flowing Ribbon 2: Solution to Harmony (Coral/Peach Interlocking Loop) -->
+  <path
+    d="M 52 102 C 32 102 20 88 20 72 C 20 52 44 46 62 42 C 82 38 96 32 96 20 C 96 10 86 4 74 4 C 58 4 44 14 38 24 C 36 28 31 29 28 26 C 25 23 25 18 29 13 C 38 0 56 -4 74 -4 C 92 -4 106 6 106 22 C 106 42 82 48 64 52 C 44 56 30 62 30 74 C 30 84 38 92 52 92 C 66 92 78 84 82 74 C 84 70 89 68 93 70 C 97 72 98 77 95 82 C 88 96 72 102 52 102 Z"
+    fill="url(#solvenera-peach-coral)"
+    opacity="0.9"
+  />
+
+  <!-- Central Nexus Core: Solution Point -->
+  <circle cx="60" cy="60" r="7" fill="#34d399" />
+  <circle cx="60" cy="60" r="3.5" fill="#f8fafc" />
+</svg>

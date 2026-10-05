@@ -115,7 +115,7 @@ export const SharesPage = () => {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-white">Community Shares & Borrows</h1>
-          <p className="text-slate-400 text-sm mt-1">
+          <p className="text-[var(--text-muted)] text-sm mt-1">
             Track textbooks, notes, and tools you have requested or shared with other members.
           </p>
         </div>
@@ -127,7 +127,7 @@ export const SharesPage = () => {
             className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
               activeTab === 'sent'
                 ? 'bg-primary-500 text-white shadow-md'
-                : 'text-slate-300 hover:text-white'
+                : 'text-[var(--text-secondary)] hover:text-white'
             }`}
           >
             My Borrow Requests ({sentRequests.length})
@@ -137,7 +137,7 @@ export const SharesPage = () => {
             className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
               activeTab === 'incoming'
                 ? 'bg-primary-500 text-white shadow-md'
-                : 'text-slate-300 hover:text-white'
+                : 'text-[var(--text-secondary)] hover:text-white'
             }`}
           >
             Incoming for My Items ({incomingRequests.length})
@@ -152,9 +152,9 @@ export const SharesPage = () => {
         </div>
       ) : currentList.length === 0 ? (
         <div className="glass-card rounded-3xl p-12 text-center border border-white/10 max-w-lg mx-auto">
-          <BookOpen className="w-12 h-12 text-slate-400 mx-auto mb-4 opacity-80" />
+          <BookOpen className="w-12 h-12 text-[var(--text-muted)] mx-auto mb-4 opacity-80" />
           <h2 className="text-xl font-bold text-white mb-2">No Share Requests Found</h2>
-          <p className="text-slate-400 text-xs">
+          <p className="text-[var(--text-muted)] text-xs">
             {activeTab === 'sent'
               ? 'When you request to borrow community textbooks or study notes, they will appear here.'
               : 'Requests from other students and members to borrow your shared resources will appear here.'}
@@ -180,10 +180,10 @@ export const SharesPage = () => {
                   >
                     {req.status}
                   </span>
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300">
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-teal-500/15 text-teal-300">
                     {req.requestType}
                   </span>
-                  <span className="text-xs text-slate-400 font-mono">
+                  <span className="text-xs text-[var(--text-muted)] font-mono">
                     ID: #{req._id.slice(-6)}
                   </span>
                 </div>
@@ -192,7 +192,7 @@ export const SharesPage = () => {
                   {req.resource?.title}
                 </h3>
 
-                <div className="flex flex-wrap items-center gap-4 text-xs text-slate-300">
+                <div className="flex flex-wrap items-center gap-4 text-xs text-[var(--text-secondary)]">
                   <span>
                     {activeTab === 'sent' ? (
                       <>Owner: <strong className="text-primary-400">{req.owner?.name}</strong></>
@@ -202,7 +202,7 @@ export const SharesPage = () => {
                   </span>
                   <span>Duration: {req.durationDays} Days</span>
                   {req.returnDeadline && (
-                    <span className="flex items-center gap-1 text-slate-400">
+                    <span className="flex items-center gap-1 text-[var(--text-muted)]">
                       <Clock className="w-3.5 h-3.5" />
                       Due: {new Date(req.returnDeadline).toLocaleDateString()}
                     </span>
@@ -210,7 +210,7 @@ export const SharesPage = () => {
                 </div>
 
                 {req.notes && (
-                  <p className="text-xs text-slate-400 italic bg-black/20 p-2.5 rounded-xl border border-white/5">
+                  <p className="text-xs text-[var(--text-muted)] italic bg-black/20 p-2.5 rounded-xl border border-white/5">
                     &ldquo;{req.notes}&rdquo;
                   </p>
                 )}
@@ -253,7 +253,7 @@ export const SharesPage = () => {
                 {req.status === 'ACCEPTED' && (
                   <button
                     onClick={() => handleComplete(req._id)}
-                    className="px-4 py-2 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-500 text-white transition-colors"
+                    className="px-4 py-2 rounded-xl text-xs font-bold bg-teal-600 hover:bg-teal-500 text-white transition-colors"
                   >
                     Mark Returned / Completed
                   </button>
@@ -280,13 +280,13 @@ export const SharesPage = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in">
           <div className="glass-card rounded-3xl p-6 sm:p-8 max-w-md w-full border border-white/15 shadow-2xl space-y-4">
             <h3 className="text-xl font-bold text-white">Review Community Sharer</h3>
-            <p className="text-xs text-slate-300">
+            <p className="text-xs text-[var(--text-secondary)]">
               Member: {reviewModalShare.owner?.name} ({reviewModalShare.resource?.title})
             </p>
 
             <form onSubmit={handleReviewSubmit} className="space-y-4 pt-2">
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-2">
+                <label className="block text-xs font-semibold text-[var(--text-secondary)] mb-2">
                   Rating
                 </label>
                 <div className="flex gap-2">
@@ -310,7 +310,7 @@ export const SharesPage = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
+                <label className="block text-xs font-semibold text-[var(--text-secondary)] mb-1">
                   Comment
                 </label>
                 <textarea
@@ -327,7 +327,7 @@ export const SharesPage = () => {
                 <button
                   type="button"
                   onClick={() => setReviewModalShare(null)}
-                  className="px-4 py-2 text-xs text-slate-400 hover:text-white"
+                  className="px-4 py-2 text-xs text-[var(--text-muted)] hover:text-white"
                 >
                   Cancel
                 </button>
