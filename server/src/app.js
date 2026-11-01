@@ -28,14 +28,27 @@ export const createApp = () => {
   // 1. Security Headers via Helmet
   app.use(helmet());
 
-  // 2. CORS with Credentials — supports multiple origins (localhost + production)
+  // 2. CORS with Credentials — supports multiple origins (localhost + production + Vercel previews)
   const allowedOrigins = config.clientUrls;
+
+  // Vercel preview URL pattern — matches all preview deployments for this project
+  // e.g. https://client-abc123-nandhana23s-projects.vercel.app
+  const VERCEL_PREVIEW_PATTERN = /^https:\/\/client(-[a-z0-9]+)?-(nandhana23s-projects|nandana583)\.vercel\.app$/;
+
+  const isOriginAllowed = (origin) => {
+    if (!origin) return true; // Allow non-browser requests (curl, Postman, server-to-server)
+    if (allowedOrigins.includes(origin)) return true;
+    if (VERCEL_PREVIEW_PATTERN.test(origin)) return true;
+    // Always allow localhost in any port for local development
+    if (/^https?:\/\/localhost(:\d+)?$/.test(origin)) return true;
+    if (/^https?:\/\/127\.0\.0\.1(:\d+)?$/.test(origin)) return true;
+    return false;
+  };
+
   app.use(
     cors({
       origin: (origin, callback) => {
-        // Allow requests with no origin (curl, Postman, server-to-server)
-        if (!origin) return callback(null, true);
-        if (allowedOrigins.includes(origin)) {
+        if (isOriginAllowed(origin)) {
           return callback(null, true);
         }
         return callback(
@@ -48,6 +61,7 @@ export const createApp = () => {
       allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
     })
   );
+
 
   // 3. Body parsers
   app.use(express.json({ limit: '10kb' }));
