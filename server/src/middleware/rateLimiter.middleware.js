@@ -14,3 +14,34 @@ export const authRateLimiter = rateLimit({
     },
   },
 });
+
+// General API rate limiter — more permissive than auth limiter
+export const apiRateLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute window
+  max: 120,            // 120 requests per minute per IP
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    success: false,
+    error: {
+      code: 'RATE_LIMIT_EXCEEDED',
+      message: 'Too many requests from this IP. Please slow down.',
+    },
+  },
+});
+
+// Strict limiter for messaging to prevent spam
+export const messagingRateLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute window
+  max: 30,             // 30 messages per minute per IP
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    success: false,
+    error: {
+      code: 'RATE_LIMIT_EXCEEDED',
+      message: 'Message rate limit reached. Please wait before sending more messages.',
+    },
+  },
+});
+

@@ -73,7 +73,8 @@ export class MatchingService {
       const words = need.title
         .toLowerCase()
         .split(/\s+/)
-        .filter((w) => w.length > 2 && !['need', 'urgent', 'repair', 'service', 'help', 'looking', 'required'].includes(w));
+        // Only filter generic filler words; keep service-domain words like 'repair', 'service', 'help'
+        .filter((w) => w.length > 2 && !['need', 'urgent', 'looking', 'required', 'please', 'want', 'some', 'for'].includes(w));
       
       const matchedWords = words.filter(
         (word) => serviceText.includes(word) || providerSkills.some((s) => s.includes(word))

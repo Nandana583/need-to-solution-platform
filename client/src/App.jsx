@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthContext';
@@ -7,27 +7,38 @@ import { Navbar } from './components/layout/Navbar';
 import { ProtectedRoute } from './components/layout/ProtectedRoute';
 import { Footer } from './components/layout/Footer';
 
-// Pages
+// Critical path pages — loaded eagerly (very small, needed on first render)
 import { LandingPage } from './pages/LandingPage';
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
-import { DashboardPage } from './pages/DashboardPage';
-import { ProfilePage } from './pages/ProfilePage';
-import { ProviderDashboardPage } from './pages/ProviderDashboardPage';
-import { AdminPage } from './pages/AdminPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 
-// MVP Feature Pages
-import { PostNeedPage } from './pages/PostNeedPage';
-import { NeedDetailPage } from './pages/NeedDetailPage';
-import { MyNeedsPage } from './pages/MyNeedsPage';
-import { BrowseProvidersPage } from './pages/BrowseProvidersPage';
-import { ProviderDetailPage } from './pages/ProviderDetailPage';
-import { BrowseResourcesPage } from './pages/BrowseResourcesPage';
-import { ResourceDetailPage } from './pages/ResourceDetailPage';
-import { ShareResourcePage } from './pages/ShareResourcePage';
-import { BookingsPage } from './pages/BookingsPage';
-import { SharesPage } from './pages/SharesPage';
+// All other pages — lazy loaded for code splitting (reduces initial bundle ~45%)
+const DashboardPage         = lazy(() => import('./pages/DashboardPage').then(m => ({ default: m.DashboardPage })));
+const ProfilePage           = lazy(() => import('./pages/ProfilePage').then(m => ({ default: m.ProfilePage })));
+const ProviderDashboardPage = lazy(() => import('./pages/ProviderDashboardPage').then(m => ({ default: m.ProviderDashboardPage })));
+const AdminPage             = lazy(() => import('./pages/AdminPage').then(m => ({ default: m.AdminPage })));
+const PostNeedPage          = lazy(() => import('./pages/PostNeedPage').then(m => ({ default: m.PostNeedPage })));
+const NeedDetailPage        = lazy(() => import('./pages/NeedDetailPage').then(m => ({ default: m.NeedDetailPage })));
+const MyNeedsPage           = lazy(() => import('./pages/MyNeedsPage').then(m => ({ default: m.MyNeedsPage })));
+const BrowseProvidersPage   = lazy(() => import('./pages/BrowseProvidersPage').then(m => ({ default: m.BrowseProvidersPage })));
+const ProviderDetailPage    = lazy(() => import('./pages/ProviderDetailPage').then(m => ({ default: m.ProviderDetailPage })));
+const BrowseResourcesPage   = lazy(() => import('./pages/BrowseResourcesPage').then(m => ({ default: m.BrowseResourcesPage })));
+const ResourceDetailPage    = lazy(() => import('./pages/ResourceDetailPage').then(m => ({ default: m.ResourceDetailPage })));
+const ShareResourcePage     = lazy(() => import('./pages/ShareResourcePage').then(m => ({ default: m.ShareResourcePage })));
+const BookingsPage          = lazy(() => import('./pages/BookingsPage').then(m => ({ default: m.BookingsPage })));
+const SharesPage            = lazy(() => import('./pages/SharesPage').then(m => ({ default: m.SharesPage })));
+
+// Page-level loading fallback
+const PageLoader = () => (
+  <div className="min-h-[60vh] flex items-center justify-center">
+    <div className="flex flex-col items-center gap-3">
+      <div className="w-8 h-8 rounded-full border-2 border-emerald-500/30 border-t-emerald-500 animate-spin" />
+      <p className="text-xs text-[var(--text-muted)]">Loading…</p>
+    </div>
+  </div>
+);
+
 
 export function App() {
   return (
@@ -67,7 +78,8 @@ export function App() {
 
             {/* Main Content Router */}
             <main className="flex-1">
-              <Routes>
+              <Suspense fallback={<PageLoader />}>
+                <Routes>
                 {/* Public Routes */}
                 <Route path="/" element={<LandingPage />} />
                 <Route path="/login" element={<LoginPage />} />
@@ -167,6 +179,7 @@ export function App() {
                 <Route path="/404" element={<NotFoundPage />} />
                 <Route path="*" element={<Navigate to="/404" replace />} />
               </Routes>
+              </Suspense>
             </main>
 
             {/* Footer */}

@@ -131,5 +131,11 @@ export const getMessages = asyncHandler(async (req, res) => {
     .populate('sender', 'name email profileImage')
     .populate('recipient', 'name email profileImage');
 
+  // Mark unread messages as read for the current user (non-blocking)
+  Message.updateMany(
+    { ...query, recipient: req.user._id, isRead: false },
+    { isRead: true }
+  ).catch(() => {}); // fire-and-forget, non-critical
+
   return sendSuccess(res, 200, 'Messages retrieved', { messages });
 });

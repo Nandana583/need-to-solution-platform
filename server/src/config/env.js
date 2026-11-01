@@ -23,5 +23,17 @@ export const config = {
   adminSeed: {
     email: process.env.ADMIN_EMAIL || 'admin@needtosolution.com',
     password: process.env.ADMIN_PASSWORD || 'AdminPassword@123',
-  }
+  },
+  // AI configuration — all features degrade gracefully when key is absent
+  ai: {
+    apiKey: process.env.OPENAI_API_KEY || '',
+    enabled: (process.env.AI_FEATURES_ENABLED || 'true').toLowerCase() !== 'false',
+    modelChat: process.env.AI_MODEL_CHAT || 'gpt-4o',
+    modelStt: process.env.AI_MODEL_STT || 'whisper-1',
+    modelTts: process.env.AI_MODEL_TTS || 'tts-1',
+    ttsVoice: process.env.AI_TTS_VOICE || 'alloy',
+    maxTokens: parseInt(process.env.AI_MAX_TOKENS || '1024', 10),
+    timeoutMs: parseInt(process.env.AI_TIMEOUT_MS || '30000', 10),
+  },
 };
+

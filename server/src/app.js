@@ -15,8 +15,12 @@ import shareRoutes from './routes/share.routes.js';
 import notificationRoutes from './routes/notification.routes.js';
 import reviewRoutes from './routes/review.routes.js';
 import messageRoutes from './routes/message.routes.js';
+import aiRoutes from './routes/ai.routes.js';
+import abuseRoutes from './routes/abuse.routes.js';
+import callRoutes from './routes/call.routes.js';
 import { errorHandler } from './middleware/error.middleware.js';
 import { AppError } from './utils/AppError.js';
+import { apiRateLimiter } from './middleware/rateLimiter.middleware.js';
 
 export const createApp = () => {
   const app = express();
@@ -66,7 +70,10 @@ export const createApp = () => {
     });
   });
 
-  // 7. Mount API Route modules
+  // 7. Global API rate limiting
+  app.use('/api/v1/', apiRateLimiter);
+
+  // 8. Mount API Route modules
   app.use('/api/v1/auth', authRoutes);
   app.use('/api/v1/admin', adminRoutes);
   app.use('/api/v1/providers', providerRoutes);
@@ -78,6 +85,9 @@ export const createApp = () => {
   app.use('/api/v1/notifications', notificationRoutes);
   app.use('/api/v1/reviews', reviewRoutes);
   app.use('/api/v1/messages', messageRoutes);
+  app.use('/api/v1/ai', aiRoutes);
+  app.use('/api/v1/abuse', abuseRoutes);
+  app.use('/api/v1/calls', callRoutes);
 
   // 8. 404 Handler for undefined routes
   app.all('*', (req, res, next) => {

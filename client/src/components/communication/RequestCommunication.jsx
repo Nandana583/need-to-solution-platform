@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { messagesApi } from '../../api/messagesApi';
+import { abuseApi } from '../../api/abuseApi';
 import { useAuth } from '../../hooks/useAuth';
 import {
   Send,
@@ -7,6 +8,9 @@ import {
   MessageSquare,
   Sparkles,
   ChevronDown,
+  Flag,
+  X,
+  AlertTriangle,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -18,6 +22,7 @@ export const RequestCommunication = ({
   bookingId,
   shareRequestId,
   otherPartyName,
+  otherPartyId,
   itemTitle,
   currentStatus,
 }) => {
@@ -27,6 +32,10 @@ export const RequestCommunication = ({
   const [sending, setSending]         = useState(false);
   const [customText, setCustomText]   = useState('');
   const [isOthersOpen, setIsOthersOpen] = useState(false);
+  const [showReportModal, setShowReportModal] = useState(false);
+  const [reportReason, setReportReason] = useState('SPAM');
+  const [reportDetails, setReportDetails] = useState('');
+  const [reportLoading, setReportLoading] = useState(false);
   const messagesEndRef                = useRef(null);
   const inputRef                      = useRef(null);
 
@@ -54,6 +63,28 @@ export const RequestCommunication = ({
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  /* ── Report/Block handler ── */
+  const handleReport = async (isBlock = false) => {
+    setReportLoading(true);
+    try {
+      await abuseApi.fileReport({
+        reportedUserId: otherPartyId,
+        reason: reportReason,
+        details: reportDetails.trim().slice(0, 500),
+        bookingId: bookingId || undefined,
+        shareRequestId: shareRequestId || undefined,
+        isBlock,
+      });
+      toast.success(isBlock ? `${otherPartyName} blocked and report filed` : 'Report submitted. Our team will review it.');
+      setShowReportModal(false);
+      setReportDetails('');
+    } catch (err) {
+      toast.error(err?.response?.data?.error?.message || 'Failed to submit report');
+    } finally {
+      setReportLoading(false);
+    }
+  };
 
   /* ── Send handler ── */
   const handleSend = async (content, messageType = 'TEXT') => {
@@ -130,7 +161,7 @@ export const RequestCommunication = ({
   }[currentStatus] || 'text-[var(--text-muted)]';
 
   return (
-    <div className="glass-card rounded-2xl border border-black/10 dark:border-white/10 overflow-hidden flex flex-col">
+    <div className="glass-card rounded-2xl border border-black/10 dark:border-white/10 overflow-hidden flex flex-col relative">
 
       {/* ── Header ── */}
       <div className="flex items-center justify-between px-4 py-3.5 border-b border-black/5 dark:border-white/10 bg-black/[0.015] dark:bg-white/[0.015]">
@@ -151,9 +182,20 @@ export const RequestCommunication = ({
             </p>
           </div>
         </div>
-        <span className="text-[9px] px-2 py-0.5 rounded-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-[var(--text-muted)] font-medium shrink-0 hidden sm:inline">
-          Task Coordination
-        </span>
+        <div className="flex items-center gap-2 shrink-0">
+          <span className="text-[9px] px-2 py-0.5 rounded-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-[var(--text-muted)] font-medium hidden sm:inline">
+            Task Coordination
+          </span>
+          {otherPartyId && (
+            <button
+              onClick={() => setShowReportModal(true)}
+              title={`Report or block ${otherPartyName || 'this user'}`}
+              className="p-1.5 rounded-lg text-[var(--text-muted)] hover:text-red-500 hover:bg-red-500/10 transition-colors"
+            >
+              <Flag className="w-3.5 h-3.5" />
+            </button>
+          )}
+        </div>
       </div>
 
       {/* ── Message History ── */}
@@ -278,6 +320,70 @@ export const RequestCommunication = ({
                 <span className="hidden sm:inline">Send</span>
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Report / Block Modal ── */}
+      {showReportModal && (
+        <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/50 backdrop-blur-sm rounded-2xl p-4">
+          <div className="glass-card w-full max-w-sm rounded-2xl border border-red-500/20 p-5 space-y-4 shadow-2xl">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <AlertTriangle className="w-4 h-4 text-red-500" />
+                <span className="text-sm font-bold text-[var(--text-primary)]">Report {otherPartyName || 'User'}</span>
+              </div>
+              <button onClick={() => setShowReportModal(false)} className="p-1 rounded-lg hover:bg-[var(--bg-secondary)] text-[var(--text-muted)]">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="space-y-3">
+              <div>
+                <label className="block text-xs font-semibold text-[var(--text-secondary)] mb-1.5">Reason *</label>
+                <select
+                  value={reportReason}
+                  onChange={(e) => setReportReason(e.target.value)}
+                  className="w-full px-3 py-2 rounded-xl glass-input text-xs"
+                >
+                  <option value="SPAM">Spam / Unsolicited messages</option>
+                  <option value="HARASSMENT">Harassment or threatening behaviour</option>
+                  <option value="INAPPROPRIATE_CONTENT">Inappropriate content</option>
+                  <option value="FAKE_PROFILE">Fake or misleading profile</option>
+                  <option value="FRAUD">Fraud or scam attempt</option>
+                  <option value="OTHER">Other</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-[var(--text-secondary)] mb-1.5">Details (optional)</label>
+                <textarea
+                  rows={3}
+                  value={reportDetails}
+                  onChange={(e) => setReportDetails(e.target.value)}
+                  placeholder="Describe what happened..."
+                  className="w-full px-3 py-2 rounded-xl glass-input text-xs resize-none"
+                  maxLength={500}
+                />
+              </div>
+            </div>
+
+            <div className="flex gap-2 pt-1">
+              <button
+                onClick={() => handleReport(false)}
+                disabled={reportLoading}
+                className="flex-1 py-2 rounded-xl text-xs font-semibold border border-amber-500/30 text-amber-700 dark:text-amber-300 hover:bg-amber-500/10 transition-colors disabled:opacity-50"
+              >
+                {reportLoading ? 'Submitting...' : 'Report Only'}
+              </button>
+              <button
+                onClick={() => handleReport(true)}
+                disabled={reportLoading}
+                className="flex-1 py-2 rounded-xl text-xs font-semibold bg-red-500/15 border border-red-500/30 text-red-700 dark:text-red-400 hover:bg-red-500/25 transition-colors disabled:opacity-50"
+              >
+                {reportLoading ? 'Submitting...' : 'Report & Block'}
+              </button>
+            </div>
+            <p className="text-[10px] text-[var(--text-muted)] text-center">Reports are reviewed by our moderation team. Blocks are immediate.</p>
           </div>
         </div>
       )}

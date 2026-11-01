@@ -1,9 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { categoriesApi } from '../api/categoriesApi';
 import { needsApi } from '../api/needsApi';
 import { bookingsApi } from '../api/bookingsApi';
 import { sharesApi } from '../api/sharesApi';
+import { aiApi } from '../api/aiApi';
+import VoiceInputButton from '../components/VoiceInputButton';
+import AIAssistant from '../components/AIAssistant';
+import { useSpeechInput } from '../hooks/useSpeechInput';
 import {
   Sparkles,
   ArrowRight,
@@ -18,6 +22,9 @@ import {
   AlertCircle,
   Loader2,
   Share2,
+  Wand2,
+  RotateCcw,
+  Info,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -52,6 +59,26 @@ export const PostNeedPage = () => {
   const [shareMessage, setShareMessage] = useState('');
   const [durationDays, setDurationDays] = useState(7);
 
+  // AI / Voice state
+  const [extractedNeed, setExtractedNeed] = useState(null); // AI extraction result
+  const [extracting, setExtracting] = useState(false);      // AI extraction in progress
+  const [aiFollowUp, setAiFollowUp] = useState(null);       // Follow-up question from AI
+
+  // Voice input hook
+  const { state: voiceState, transcript, error: voiceError, detectedLanguage,
+          startRecording, stopRecording, reset: resetVoice } = useSpeechInput({
+    onTranscript: useCallback((text, lang) => {
+      // Auto-fill the description field with transcribed text
+      setDescription((prev) => prev ? `${prev} ${text}` : text);
+      // If title is empty, use first 80 chars as title suggestion
+      if (!title.trim()) {
+        setTitle(text.slice(0, 80));
+      }
+      // Trigger AI extraction after transcript arrives
+      handleAIExtract(text);
+    }, [title]),
+  });
+
   useEffect(() => {
     const loadCategories = async () => {
       try {
@@ -71,7 +98,67 @@ export const PostNeedPage = () => {
     loadCategories();
   }, []);
 
+  // AI need extraction — populates form fields from natural language
+  const handleAIExtract = useCallback(async (rawText) => {
+    const text = rawText || description;
+    if (!text?.trim()) {
+      toast.error('Please enter or speak your need first');
+      return;
+    }
+
+    setExtracting(true);
+    setExtractedNeed(null);
+    setAiFollowUp(null);
+
+    try {
+      const res = await aiApi.extractNeed(text.trim());
+      if (!res?.data) throw new Error('No response from AI');
+
+      const extracted = res.data;
+
+      if (!extracted.enabled) {
+        // AI not configured — just keep user's raw text as-is
+        toast('AI extraction not available. Fill in details manually.', { icon: 'ℹ️' });
+        return;
+      }
+
+      setExtractedNeed(extracted);
+
+      // Auto-populate form fields with AI-extracted data (user can edit before submitting)
+      if (extracted.normalizedDescription && !description.trim()) {
+        setDescription(extracted.normalizedDescription);
+      }
+      if (extracted.requiredService) setRequiredService(extracted.requiredService);
+      if (extracted.requiredSkill) setRequiredSkill(extracted.requiredSkill);
+      if (extracted.location) setLocationLabel((prev) => prev || extracted.location);
+      if (extracted.preferredTime) setPreferredTime((prev) => prev || extracted.preferredTime);
+      if (extracted.urgency && ['LOW','MEDIUM','HIGH','CRITICAL'].includes(extracted.urgency)) {
+        setUrgency(extracted.urgency);
+      }
+      // Set title from AI if empty and we got a normalizedDescription
+      if (!title.trim() && extracted.normalizedDescription) {
+        setTitle(extracted.normalizedDescription.slice(0, 80));
+      }
+
+      if (extracted.followUpQuestion) {
+        setAiFollowUp(extracted.followUpQuestion);
+      }
+
+      if (extracted.confidence === 'HIGH') {
+        toast.success('AI extracted your need details — review and submit!');
+      } else if (extracted.confidence === 'MEDIUM') {
+        toast('AI extracted partial details — please review the form.', { icon: '⚠️' });
+      }
+    } catch (err) {
+      // Non-blocking — AI extraction failure doesn't block form submission
+      console.warn('[PostNeedPage] AI extraction failed:', err.message);
+    } finally {
+      setExtracting(false);
+    }
+  }, [description, title]);
+
   const handleSubmit = async (e) => {
+
     e.preventDefault();
     if (!title.trim() || !description.trim() || !categoryId) {
       toast.error('Please fill in title, description and category');
@@ -173,7 +260,105 @@ export const PostNeedPage = () => {
           {/* Post Need Form */}
           <div className="glass-card rounded-3xl p-6 sm:p-8 border border-black/10 dark:border-white/15 shadow-2xl">
             <form onSubmit={handleSubmit} className="space-y-6">
+
+              {/* ── Voice Input + AI Extraction ── */}
+              <div className="p-4 rounded-2xl border border-emerald-500/20 bg-emerald-500/[0.03] dark:bg-emerald-950/10 space-y-3">
+                <div className="flex items-center justify-between flex-wrap gap-2">
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                    <span className="text-xs font-bold text-emerald-700 dark:text-emerald-300 uppercase tracking-wider">
+                      AI Voice Input
+                    </span>
+                    <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/25">
+                      Telugu · English · Mixed
+                    </span>
+                  </div>
+                  {extractedNeed && (
+                    <button
+                      type="button"
+                      onClick={() => { setExtractedNeed(null); setAiFollowUp(null); }}
+                      className="flex items-center gap-1 text-[10px] text-[var(--text-muted)] hover:text-[var(--text-secondary)] transition-colors"
+                    >
+                      <RotateCcw className="w-3 h-3" />
+                      Clear extraction
+                    </button>
+                  )}
+                </div>
+
+                {/* Mic button row */}
+                <div className="flex items-start gap-3">
+                  <VoiceInputButton
+                    state={voiceState}
+                    error={voiceError}
+                    detectedLanguage={detectedLanguage}
+                    transcript={transcript}
+                    onStart={startRecording}
+                    onStop={stopRecording}
+                    onReset={resetVoice}
+                  />
+                  {description.trim() && !extractedNeed && !extracting && (
+                    <button
+                      type="button"
+                      onClick={() => handleAIExtract()}
+                      disabled={extracting}
+                      className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-[var(--text-secondary)] hover:border-emerald-500/30 hover:text-emerald-700 dark:hover:text-emerald-300 transition-all"
+                    >
+                      <Wand2 className="w-4 h-4" />
+                      Extract with AI
+                    </button>
+                  )}
+                  {extracting && (
+                    <div className="flex items-center gap-1.5 text-xs text-amber-600 dark:text-amber-400">
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span>AI is analysing your need...</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* AI follow-up question */}
+                {aiFollowUp && (
+                  <div className="flex items-start gap-2 p-3 rounded-xl bg-amber-500/8 border border-amber-500/20">
+                    <Info className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+                    <p className="text-xs text-amber-800 dark:text-amber-300">{aiFollowUp}</p>
+                  </div>
+                )}
+
+                {/* AI extraction summary badge */}
+                {extractedNeed?.confidence && (
+                  <div className={`p-3 rounded-xl border text-xs space-y-1.5 ${
+                    extractedNeed.confidence === 'HIGH'
+                      ? 'bg-emerald-500/8 border-emerald-500/25'
+                      : extractedNeed.confidence === 'MEDIUM'
+                      ? 'bg-amber-500/8 border-amber-500/20'
+                      : 'bg-[var(--bg-secondary)] border-[var(--border-subtle)]'
+                  }`}>
+                    <div className="flex items-center gap-2 font-semibold text-[var(--text-primary)]">
+                      <CheckCircle className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                      AI interpreted your need — form fields pre-filled, review before submitting
+                      <span className={`ml-auto px-1.5 py-0.5 rounded-full text-[10px] font-bold border ${
+                        extractedNeed.confidence === 'HIGH'
+                          ? 'bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border-emerald-500/30'
+                          : 'bg-amber-500/15 text-amber-700 dark:text-amber-300 border-amber-500/25'
+                      }`}>
+                        {extractedNeed.confidence} confidence
+                      </span>
+                    </div>
+                    {extractedNeed.detectedLanguage && extractedNeed.detectedLanguage !== 'Unknown' && (
+                      <p className="text-[var(--text-secondary)]">
+                        <span className="font-medium">Detected language:</span> {extractedNeed.detectedLanguage}
+                      </p>
+                    )}
+                    {extractedNeed.missingInfo?.length > 0 && (
+                      <p className="text-amber-700 dark:text-amber-400">
+                        <span className="font-medium">Please also provide:</span> {extractedNeed.missingInfo.join(', ')}
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
+
               {/* Category & Need Type */}
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)] mb-2">
@@ -659,6 +844,18 @@ export const PostNeedPage = () => {
           </div>
         </div>
       )}
+
+      {/* AI Assistant floating panel */}
+      <AIAssistant
+        title="Solvenera — Requester AI Assistant"
+        placeholder="Ask about your need, how to fill the form, or what providers to expect..."
+        context={{
+          needTitle: title || undefined,
+          urgency: urgency || undefined,
+          locationLabel: locationLabel || undefined,
+          requestType: needType || undefined,
+        }}
+      />
     </div>
   );
 };
